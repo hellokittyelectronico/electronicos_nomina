@@ -11,7 +11,7 @@
               <group  string="Datos">
                 <field name="name"/>
               </group>
-              <field name="generales_id" string="Campos">
+              <field name="generales_id" string="Campos" attrs="{'invisible':[('name','!=','Nómina electrónica')]}" >
               <tree>
                 <field name="name"/>
                 <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
