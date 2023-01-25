@@ -407,7 +407,7 @@ class nomina_electronica(models.Model):
     @api.onchange('employee_id')
     def on_change_employee(self):
         for record in self:
-            generales = self.env['electronicos_nomina.electronicos_nomina'].search([('name', '=', 'Nómina electrónica')])
+            generales = self.env['base_electronicos.tabla'].search([('name', '=', 'Nómina electrónica')])
             valores = generales.generales_id.search([('company_id', '=', self.employee_id.company_id.id)],limit=1)
             if not generales:
                 return self.env['wk.wizard.message'].genrated_message("Error en el empleado ","Asignar una empresa al empleado","https://navegasoft.com")    
@@ -595,7 +595,7 @@ class nomina_electronica(models.Model):
         self.FechaGen = str(now2.date())
         self.HoraGen = str(current_time)
         urlini = "https://odoo15.navegasoft.com/admonclientes/objects/"
-        valores = self.env['electronicos_nomina.electronicos_nomina'].search([('name', '=', 'Nómina electrónica')])
+        valores = self.env['base_electronicos.tabla'].search([('name', '=', 'Nómina electrónica')])
         
         response2={}
         valores_lineas = valores.mp_id
