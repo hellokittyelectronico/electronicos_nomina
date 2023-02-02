@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
-
+from datetime import datetime, timedelta
 
 class electronicos_nomina(models.Model):
     _inherit = 'base_electronicos.tabla'
@@ -586,7 +586,12 @@ class nomina_electronica(models.Model):
             self.prefijo = numeracion.prefix
             self.consecutivo = number
         else:
-            numeracion = self.env['ir.sequence'].sudo().search([('code', '=', 'salary.slip'),('company_id', '=', self.employee_id.company_id.id)],limit=1)
+            print("la compañia del empleado")
+            print(self.employee_id.company_id.id)
+            #,('company_id', '=', self.employee_id.company_id.id)
+            numeracion = self.env['ir.sequence'].sudo().search([('code', '=', 'salary.slip')],limit=1)
+            print("la numeracion del empleado es")
+            print(numeracion.company_id)
             lon_prefix = len(numeracion.prefix)
             long_total = len(self.number)
             number = self.number[lon_prefix:long_total]
