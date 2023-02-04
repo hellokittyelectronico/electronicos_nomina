@@ -2,6 +2,11 @@
 
 from odoo import models, fields, api
 from datetime import datetime, timedelta
+import os
+import requests
+import json 
+from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
+from odoo.tools.safe_eval import safe_eval
 
 class electronicos_nomina(models.Model):
     _inherit = 'base_electronicos.tabla'

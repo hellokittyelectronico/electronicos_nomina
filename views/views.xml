@@ -207,5 +207,16 @@
         </field>
     </record>   
 
+    <record id="nomina_atributo" model="ir.ui.view">
+        <field name="name">nomina_hr_atributo</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+        <field name="arch" type="xml">
+          <xpath expr="//form" position="attributes">
+              <attribute name="delete">false</attribute>
+          </xpath>
+        </field>
+    </record>
+
   </data>
 </odoo>
