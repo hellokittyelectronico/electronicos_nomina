@@ -18,7 +18,7 @@
         <field name="name">FechaIngreso</field>
         <field name="categoria">Periodo</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.contract_id.date_start</field>
+        <field name="campo_tecnico">str(self.contract_id.date_start)</field>
         <field name="detalle">Fecha de Ingreso del trabajador a la empresa (AAAA-MM-DD)*</field>
     </record>
      <!-- <record id="n0b" model="base_electronicos.line">
@@ -34,7 +34,7 @@
         <field name="name">FechaLiquidacionInicio</field>
         <field name="categoria">Periodo</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.date_from</field>
+        <field name="campo_tecnico">str(self.date_from)</field>
         <field name="detalle">Fecha de inicio de Liquidación de Nómina (AAAA-MM-DD)*</field>
     </record>
     <record id="n2b" model="base_electronicos.line">
@@ -42,7 +42,7 @@
         <field name="name">FechaLiquidacionFin</field>
         <field name="categoria">Periodo</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.date_to</field>
+        <field name="campo_tecnico">str(self.date_to)</field>
         <field name="detalle">Fecha fin de Liquidación de Nómina (AAAA-MM-DD)*</field>
     </record>
     <record id="n3b" model="base_electronicos.line">
@@ -50,7 +50,7 @@
         <field name="name">FechaGen</field>
         <field name="categoria">Periodo</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.date_from</field>
+        <field name="campo_tecnico">str(self.date_from)</field>
         <field name="detalle">Fecha de emisión del documento (AAAA-MM-DD)*</field>
     </record>
     <record id="n4a" model="base_electronicos.line">
@@ -146,7 +146,7 @@
         <field name="name">FechaGen</field>
         <field name="categoria">informaciongeneral</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.FechaGen</field>
+        <field name="campo_tecnico">str(self.FechaGen)</field>
         <field name="detalle">Fecha de emisión del documento (AAAA-MM-DD)</field>
     </record>
     <record id="n14b" model="base_electronicos.line">
@@ -275,7 +275,7 @@
         <field name="name">FechaInicioLabores</field>
         <field name="categoria">Periodo</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.contract_id.date_start</field>
+        <field name="campo_tecnico">str(self.contract_id.date_start)</field>
         <field name="detalle">Fecha inicio labores del empleador</field>
     </record>
     <record id="n29b" model="base_electronicos.line">
@@ -451,7 +451,7 @@
         <field name="name">FechaPago</field>
         <field name="categoria">Pago</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.fecha_pago</field>
+        <field name="campo_tecnico">str(self.fecha_pago)</field>
         <field name="detalle">Fecha en que se efectuo el pago</field>
     </record>
     <record id="n51b" model="base_electronicos.line">
@@ -1823,7 +1823,7 @@
         <field name="categoria">informaciongeneral</field>
         <field name="subcategoria"></field>
         <field name="obligatorio">false</field>
-        <field name="campo_tecnico">self.FechaGenPred</field>
+        <field name="campo_tecnico">str(self.FechaGenPred)</field>
         <field name="detalle">Fecha de generacion predecesor nomina</field>
     </record>
 
