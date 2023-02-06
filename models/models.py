@@ -105,7 +105,7 @@ class nomina_electronica(models.Model):
     departamentoestado = fields.Char("Departamento")
     municipiociudad = fields.Char("Ciudad")
     Idioma = fields.Char("Idioma",default="es")
-    
+    impreso = fields.Boolean("Impreso")
     version = fields.Char("Version",default="")
     ambiente = fields.Selection([
         ('1', 'Produccion'),
@@ -150,9 +150,17 @@ class nomina_electronica(models.Model):
     cune = fields.Char('CUNE')
     # PeriodoNomina = fields.Char('Periodo Nomina') 
     # TipoMoneda = fields.Char('TipoMoneda', default="COP") 
-
+    input_line_ids = fields.One2many(
+        'hr.payslip.input', 'payslip_id', string='Payslip Inputs',
+        compute='_compute_input_line_ids', store=True,copy='True',
+        readonly=False, states={'done': [('readonly', True)], 'cancel': [('readonly', True)], 'paid': [('readonly', True)]})
     # Notas = fields.Char('Notas')    
 
+    def copy(self, default=None):
+        default = dict(default or {})
+        default.update({'estado': 'no_generada','transaccionID': '','consecutivo': ''})
+        return super(nomina_electronica, self).copy(default)
+        
     #@api.multi
     def compute_refund(self,causa,tipo_nota):
         for payslip in self:
