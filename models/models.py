@@ -487,22 +487,25 @@ class nomina_electronica(models.Model):
                     final2 = final['result']
                     final_data = json.loads(json.dumps(final2)) #eval(final2)
                     #archivo = final_data['code']
-                    module_path = modules.get_module_path('electronicos_nomina')        
-                    model = "facturas"
-                    if '\\' in module_path:
-                        src_path = '\\static\\'
-                        src_model_path = "{0}{1}\\".format('\\static', model)
-                    else:
-                        src_path = '/static/'
-                        src_model_path = "{0}{1}/".format('/static/', model)
+                    # module_path = modules.get_module_path('tabla_nomina')        
+                    # model = "facturas"
+                    # if '\\' in module_path:
+                    #     src_path = '\\static\\'
+                    #     src_model_path = "{0}{1}\\".format('\\static', model)
+                    # else:
+                    #     src_path = '/static/'
+                    #     src_model_path = "{0}{1}/".format('/static/', model)
                     
                     # if "model" folder does not exists create it
-                    os.chdir("{0}{1}".format(module_path, src_path))
-                    if not os.path.exists(model):
-                        os.makedirs(model)
+                    # os.chdir("{0}{1}".format(module_path, src_path))
+                    # if not os.path.exists(model):
+                    #     os.makedirs(model)
                     extension = ".pdf"
                     #file_path = "{0}{1}".format(module_path + src_model_path + str(name), extension)
-                    file_path = "{0}{1}".format(module_path + src_model_path + str(self.number), extension)
+                    #file_path = "{0}{1}".format(module_path + src_model_path + str(self.number), extension)
+                    file_path = "/home/odoo/static/"+str(self.number)+extension
+                    if not os.path.exists("/home/odoo/static/"):
+                        os.makedirs("/home/odoo/static/")
                     if not (os.path.exists(file_path)):
                         size =1
                         if size == 0:
@@ -512,7 +515,8 @@ class nomina_electronica(models.Model):
                             import base64 
                             print(final_data)
                             if final_data['code'] == '400':
-                                return self.env['wk.wizard.message'].genrated_message('Estamos recibiendo un codigo 400 Es necesario esperar para volver imprimir el documento', 'Es necesario esperar para volver a imprimir el documento')
+                                return self.env['wk.wizard.message'].genrated_message(final['mensaje'],final['titulo'] ,final['link'])
+                                #self.env['wk.wizard.message'].genrated_message('Estamos recibiendo un codigo 400 Es necesario esperar para volver imprimir el documento', 'Es necesario esperar para volver a imprimir el documento')
                             elif final_data['code'] == '200':
                                 print("el codigo")
                                 print(final_data['code'])
@@ -522,15 +526,17 @@ class nomina_electronica(models.Model):
                                     'name': self.number+extension,
                                     'type': 'binary',
                                     'datas': i64,
-                                    'datas_fname': self.number+extension,
+                                    #'datas_fname': self.number+extension,
                                     'res_model': 'hr.payslip',
                                     'res_id': self.id,
                                     })
                                 if att_id:
-                                    self.write({"impreso":True})
+                                    # self.write({"impreso":True})
                                     return self.env['wk.wizard.message'].genrated_message("Ve a attachment","Factura impresa" ,"https://navegasoft.com")
                             else:
-                                return self.env['wk.wizard.message'].genrated_message('Estamos recibiendo un codigo de error Es necesario esperar para volver imprimir el documento', 'Es necesario esperar para volver a imprimir el documento')
+                                print(final_data)
+                                return self.env['wk.wizard.message'].genrated_message(final_data['mensaje'],final_data['titulo'] ,final_data['link'])
+                                #self.env['wk.wizard.message'].genrated_message('Estamos recibiendo un codigo de error Es necesario esperar para volver imprimir el documento', 'Es necesario esperar para volver a imprimir el documento')
                                 
                     else:
                         raise UserError(_('Ve a attachment, Factura ya impresa.'))

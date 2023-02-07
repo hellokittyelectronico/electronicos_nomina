@@ -70,7 +70,7 @@
             <xpath expr="//button[@name='action_print_payslip']" position="after">
                  <!-- states="draft,open"   -->
                 <button name="envio_directo" type="object"  string="Generar Documento electrónico" groups="account.group_account_invoice" attrs="{'invisible':['|',('estado','in',('generada_correctamente')),('state','in',('draft'))]}"/>
-                <button name="action_cfdi_generate" type="object"  string="Imprimir" groups="account.group_account_invoice" attrs="{'invisible':['|',('estado','in',('No_generada','generada_con_errores')),('state','in',('draft'))]}"/>
+                <button name="action_cfdi_generate" type="object"  string="Imprimir Documento electrónico" groups="account.group_account_invoice" attrs="{'invisible':['|',('estado','in',('No_generada','generada_con_errores')),('state','in',('draft'))]}"/>
                 <button name="genera_cufe" type="object"  string="Generar CUFE" groups="account.group_account_invoice" attrs="{'invisible':['|',('estado','in',('generada_correctamente')),('state','in',('draft'))]}"/>
                 
             </xpath>
