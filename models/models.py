@@ -156,6 +156,16 @@ class nomina_electronica(models.Model):
         readonly=False, states={'done': [('readonly', True)], 'cancel': [('readonly', True)], 'paid': [('readonly', True)]})
     # Notas = fields.Char('Notas')    
 
+    ##contrain numero de nomina
+    @api.constrains('number')
+    def _check_number(self):
+        for record in self:
+            cantidad = self.env['hr.payslip'].search([('number', '=', self.number)])
+            print(cantidad)
+            print(len(cantidad))
+            if len(cantidad) > 1:
+                raise ValidationError("Existe un comprobante con el mismo numero, por favor modifique el consecutivo de la nomina")
+
     def copy(self, default=None):
         default = dict(default or {})
         default.update({'estado': 'no_generada','transaccionID': '','consecutivo': ''})
