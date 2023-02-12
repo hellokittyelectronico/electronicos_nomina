@@ -147,7 +147,7 @@
                             
                         </group>
                         <group string="Datos resultado">
-                                <field name="estado"/>
+                                <field name="estado" readonly='1'/>
                                 <field name="transaccionID"/>
                             </group>
                         <!-- <div colspan="4">
@@ -209,13 +209,13 @@
         </field>
     </record>   
 
-    <record id="nomina_atributo" model="ir.ui.view">
+    <!-- <record id="nomina_atributo" model="ir.ui.view">
         <field name="name">nomina_hr_atributo</field>
         <field name="model">hr.payslip</field>
         <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
         <field name="arch" type="xml">
           <xpath expr="//form" position="attributes">
-              <attribute name="delete">false</attribute>
+              <attribute t-if='record.estado=="Generada_correctamente"' name="delete">false</attribute>
           </xpath>
         </field>
     </record>
@@ -229,7 +229,7 @@
               <attribute name="delete">false</attribute>
           </xpath>
         </field>
-    </record>
+    </record> -->
 
   </data>
 </odoo>

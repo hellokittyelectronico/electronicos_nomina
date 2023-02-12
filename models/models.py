@@ -164,43 +164,98 @@ class nomina_electronica(models.Model):
             print(cantidad)
             print(len(cantidad))
             if len(cantidad) > 1:
-                raise ValidationError("Existe un comprobante con el mismo numero, por favor modifique el consecutivo de la nomina")
+                raise ValidationError("Existe un comprobante con el mismo numero, por favor modifique el consecutivo de la nomina "+cantidad[0].number)
 
     def copy(self, default=None):
         default = dict(default or {})
         default.update({'estado': 'no_generada','transaccionID': '','consecutivo': ''})
         return super(nomina_electronica, self).copy(default)
-        
+
+    def unlink(self, default=None):
+        for payslip in self:
+            if payslip.estado == 'Generada_correctamente':
+                raise UserError('No se puede eliminar una nomina que ya ha sido generada')
+        return super(nomina_electronica, self).unlink()    
+    
     #@api.multi
     def compute_refund(self,causa,tipo_nota):
+        copied_payslips = self.env['hr.payslip']
         for payslip in self:
             numero_pred = payslip.prefijo+payslip.consecutivo
             fecha_gen_pred = payslip.FechaGen
             CUNEPred = payslip.cune
-            if payslip.number:
-                number = payslip.number
-            else:
-                number = payslip.number or self.env['ir.sequence'].next_by_code('salary.refund')
+            # if payslip.number:
+            #     number = payslip.number
+            # else:
+            number = self.env['ir.sequence'].next_by_code('salary.refund')
             
             numbersequence = self.env['ir.sequence'].search([('code', '=', 'salary.refund')])
-            payslip.onchange_employee()
             prefijo = numbersequence.prefix
             longitudprefijo = len(prefijo)
             longitudsecuencia = len(number)
             consecutivo = number[longitudprefijo:longitudsecuencia]
-            # delete old payslip lines
-            payslip.line_ids.unlink()
-            # set the list of contract for which the rules have to be applied
-            # if we don't give the contract, then the rules to apply should be for all current contracts of the employee
-            contract_ids = payslip.contract_id.ids or \
-                self.get_contract(payslip.employee_id, payslip.date_from, payslip.date_to)
-            lines = [(0, 0, line) for line in self._get_payslip_lines(contract_ids, payslip.id)]
-            payslip.write({'line_ids': lines, 'number': number,'transaccionID':'',
+            print("number")
+            print(number)
+            copied_payslip = payslip.copy({
+                'credit_note': True,
+                'name': number,
+                'edited': True,
+                'state': 'verify', 'number': number,'transaccionID':'',
                         'estado':'no_generada','nota_credito':tipo_nota,'causa':causa,
                         'CUNEPred':CUNEPred,'NumeroPred':numero_pred,'FechaGenPred':fecha_gen_pred,
-                        'prefijo':prefijo,'consecutivo':consecutivo})
+                        'prefijo':prefijo,'consecutivo':consecutivo
+            })
+            for wd in copied_payslip.worked_days_line_ids:
+                wd.number_of_hours = -wd.number_of_hours
+                wd.number_of_days = -wd.number_of_days
+                wd.amount = -wd.amount
+            for line in copied_payslip.line_ids:
+                line.amount = -line.amount
+            copied_payslips |= copied_payslip
+        # formview_ref = self.env.ref('hr_payroll.view_hr_payslip_form', False)
+        # treeview_ref = self.env.ref('hr_payroll.view_hr_payslip_tree', False)
+        return copied_payslip
+        # {
+        #     'name': ("Refund Payslip"),
+        #     'view_mode': 'tree, form',
+        #     'view_id': False,
+        #     'res_model': 'hr.payslip',
+        #     'type': 'ir.actions.act_window',
+        #     'target': 'current',
+        #     'domain': [('id', 'in', copied_payslips.ids)],
+        #     'views': [(treeview_ref and treeview_ref.id or False, 'tree'), (formview_ref and formview_ref.id or False, 'form')],
+        #     'context': {}
+        # }
+        
+        
+        # for payslip in self:
+        #     numero_pred = payslip.prefijo+payslip.consecutivo
+        #     fecha_gen_pred = payslip.FechaGen
+        #     CUNEPred = payslip.cune
+        #     if payslip.number:
+        #         number = payslip.number
+        #     else:
+        #         number = payslip.number or self.env['ir.sequence'].next_by_code('salary.refund')
+            
+        #     numbersequence = self.env['ir.sequence'].search([('code', '=', 'salary.refund')])
+        #     payslip.onchange_employee()
+        #     prefijo = numbersequence.prefix
+        #     longitudprefijo = len(prefijo)
+        #     longitudsecuencia = len(number)
+        #     consecutivo = number[longitudprefijo:longitudsecuencia]
+        #     # delete old payslip lines
+        #     payslip.line_ids.unlink()
+        #     # set the list of contract for which the rules have to be applied
+        #     # if we don't give the contract, then the rules to apply should be for all current contracts of the employee
+        #     contract_ids = payslip.contract_id.ids or \
+        #         self.get_contract(payslip.employee_id, payslip.date_from, payslip.date_to)
+        #     lines = [(0, 0, line) for line in self._get_payslip_lines(contract_ids, payslip.id)]
+        #     payslip.write({'line_ids': lines, 'number': number,'transaccionID':'',
+        #                 'estado':'no_generada','nota_credito':tipo_nota,'causa':causa,
+        #                 'CUNEPred':CUNEPred,'NumeroPred':numero_pred,'FechaGenPred':fecha_gen_pred,
+        #                 'prefijo':prefijo,'consecutivo':consecutivo})
 
-        return True
+        # return True
 
     #@api.multi
     def refund_sheet(self):
