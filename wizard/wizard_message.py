@@ -19,8 +19,8 @@ class WkWizardMessage(models.TransientModel):
 		Payslip = self.env['hr.payslip'].browse(ids_actual[0])
 
 		for payslip in Payslip:
-			copied_payslip = payslip.copy({'credit_note': True, 'name': _('Refund: ') + payslip.name})
-			copied_payslip.compute_refund(self.text,self.tipo)
+			# copied_payslip = payslip.copy({'credit_note': True, 'name': _('Refund: ') + payslip.name})
+			copied_payslip = payslip.compute_refund(self.text,self.tipo)
 			# copied_payslip.action_payslip_done()
 		formview_ref = self.env.ref('hr_payroll.view_hr_payslip_form', False)
 		treeview_ref = self.env.ref('hr_payroll.view_hr_payslip_tree', False)
