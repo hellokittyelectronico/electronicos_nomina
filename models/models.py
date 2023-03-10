@@ -662,6 +662,7 @@ class nomina_electronica(models.Model):
         import time
         now2 = datetime.now()
         current_time = now2.strftime("%H:%M:%S")
+        self.onchange_employee()
         if self.credit_note == True:
             numeracion = self.env['ir.sequence'].search([('code', '=', 'salary.refund')])
             lon_prefix = len(numeracion.prefix)
