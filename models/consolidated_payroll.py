@@ -352,7 +352,9 @@ class nomina_electronica(models.Model):
                 if "error_d" in final:
                     if "transactionID" in final:
                         self.write({"impreso":False,"transaccionID":final['transactionID'],"estado":"Generada_correctamente","error":""})
-                    return self.env['wk.wizard.message'].genrated_message(final['mensaje'],final['titulo'] ,final['link'])
+                    else:
+                        self.write({"estado":"Generada_con_errores","error":final['mensaje']})
+                        return self.env['wk.wizard.message'].genrated_message(final['mensaje'],final['titulo'] ,final['link'])
                 else:
                     final_error = json.loads(final) #.decode("utf-8")
                     final_text = final_error['error']
