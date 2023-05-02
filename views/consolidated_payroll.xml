@@ -1,0 +1,163 @@
+
+<odoo>
+    <data>
+
+<record id="electronic_consolidated_button" model="ir.ui.view">
+        <field name="name">electronic_consolidated_payroll</field>
+        <field name="model">consolidated.payroll.slip</field>
+        <field name="inherit_id" ref="consolidated_payroll.consolidated_payroll_slip_form"/>
+        <field name="arch" type="xml">
+            
+            <xpath expr="/form/*" position="before">
+                 <!-- states="draft,open"   -->
+                <header>
+                    <button name="envio_directo" type="object"  string="Generar Documento electrónico" groups="account.group_account_invoice" attrs="{'invisible':[('estado','in',('Generada_correctamente'))]}"/>
+                    <!-- ,('state','in',('draft')) -->
+                    <button name="action_cfdi_generate" type="object"  string="Imprimir DE" groups="account.group_account_invoice" attrs="{'invisible':[('estado','in',('no_generada','generada_con_errores'))]}"/>
+                    <!-- ,('state','in',('draft')) -->
+                <!-- <button name="genera_cufe" type="object"  string="Generar CUFE" groups="account.group_account_invoice" attrs="{'invisible':['|',('estado','in',('generada_correctamente')),('state','in',('draft'))]}"/> -->
+                </header>
+            </xpath>
+            
+            <xpath expr="//field[@name='number']" position="replace">
+        <!-- states="draft,open"  attrs="{'invisible':['|',('estado_factura','in',('factura_correcta')),('state','in',('draft','open'))]}" -->
+                <field name="number" readonly="1"/>
+                <group>
+                <field name="fecha_pago" />
+                <field name="credit_note" />
+                <field name="nota_credito" attrs="{'invisible':[('credit_note','=',False)]}"/>
+                <field name="causa" attrs="{'invisible':[('credit_note','=',False)]}"/>
+                <field name="CUNEPred" attrs="{'invisible':[('credit_note','=',False)]}"/>
+                <field name="NumeroPred" attrs="{'invisible':[('credit_note','=',False)]}"/>
+                <field name="FechaGenPred" attrs="{'invisible':[('credit_note','=',False)]}"/>
+                </group>
+            </xpath>
+            <!-- <xpath expr="//field[@name='input_line_ids']" position="replace">
+              <field name="input_line_ids" colspan="5" nolabel="1">
+                    <tree string="Input Data" editable="bottom">
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="cantidad"/>
+                        <field name="amount"/>
+                        <field name="contract_id"/>
+                        <field name="sequence" invisible="True"/>
+                    </tree>
+                    <form string="Payslip Line">
+                        <group col="5">
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="cantidad"/>
+                            <field name="sequence"/>
+                            <field name="amount"/>
+                            <field name="contract_id"/>
+                        </group>
+                    </form>
+                </field>
+            </xpath> -->
+            <xpath expr="//page[2]" position="after">
+                <page string="Nomina electronica">
+                        <group cols="2">
+                            <group string="Datos Entrada">
+                                
+                                <field name="prefijo" readonly="1"/>
+                                <field name="consecutivo" readonly="1"/>
+                                <field name="paisgeneracion"/>
+                                <field name="departamentoestado"/>
+                                <field name="municipiociudad"/>
+                                <field name="Idioma"/>
+                                <field name="ambiente"/>
+                                <field name="tipoXML"/>
+                                <field name="FechaGen"/>
+                                <field name="HoraGen"/>
+                                <field name="PeriodoNomina"/>
+                                <field name="TipoMoneda"/>
+                                <field name="Notas"/>
+                                </group>
+                              <group>
+                                <!-- empleador -->
+                                <field name="RazonSocial"/>
+                                <field name="PrimerApellido"/>
+                                <field name="SegundoApellido"/>
+                                <field name="PrimerNombre"/>
+                                <field name="OtrosNombres"/>
+                                <field name="NIT"/>
+                                <field name="DV"/> 
+                                <field name="PaisEmpleador"/>
+                                <field name="MunicipioCiudadEmpleador"/>
+                                <field name="DepartamentoEstadoEmpleador"/>
+                                <field name="DireccionEmpleador"/> 
+                                <field name="id_plataforma"/>
+                                <field name="password"/>
+                               </group>
+                            
+                        </group>
+                        <group string="Datos resultado">
+                                <field name="estado" readonly='1'/>
+                                <field name="transaccionID"/>
+                                <field name="error"/>
+                            </group>
+                        <!-- <div colspan="4">
+                            <field name="note" placeholder="Add an internal note..."/>
+                        </div> -->
+                   </page>
+                 <!-- <page string="XML">
+                        <div colspan="4">
+                            <field name="xml" placeholder="Al generar el documento se crea este..."/>
+                        </div>
+                   </page>   -->
+            </xpath>
+        </field>
+    </record>
+
+    <record id="consolidated_electronics_tree" model="ir.ui.view">
+        <field name="name">electronics_consolidated_hr_tree</field>
+        <field name="model">consolidated.payroll.slip</field>
+        <field name="inherit_id" ref="consolidated_payroll.consolidated_payroll_slip_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='number']" position="after">
+                <field name="estado"/>
+                <field name="error"/>
+			</xpath>
+        </field>
+    </record>
+
+    
+    <act_window id="action_cfdi_generate" 
+            name="Generar Documento Electronico" 
+            res_model="multiple.consolidated.payroll" 
+            binding_model="consolidated_payroll.model_consolidated_payroll_slip" 
+            view_mode="form" 
+            target="new" 
+            binding_views="list,form" />
+<!-- groups="account.group_account_user" -->
+
+    <record id="view_generate_multiple_consolidated_payroll_form" model="ir.ui.view">
+        <field name="name">multiple.consolidated.payroll.slip.form</field>
+        <field name="model">multiple.consolidated.payroll</field>
+        <field name="arch" type="xml">
+            <form string="Genarar Electronicamente">
+                <p>
+                    Deseas enviar a la dian ?
+                </p>
+                <footer>
+                    <button name="generate_multiple_consolidated" string="Generar" type="object" class="btn- primary"/>
+                    <button string="Cancelar" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+<!-- electronicos_nomina.model_multiple_consolidated_payroll -->
+    <record model="ir.actions.server" id="action_consolidate_invoice_date">
+        <field name="name">Generar documento electronico</field>
+        <field name="model_id" ref="consolidated_payroll.model_consolidated_payroll_slip"/>
+        <field name="binding_model_id" ref="consolidated_payroll.model_consolidated_payroll_slip"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.generate_multiple_consolidated()
+        </field>
+    </record>
+
+
+        </data>
+</odoo>
