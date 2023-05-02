@@ -356,7 +356,7 @@ class nomina_electronica(models.Model):
                 else:
                     final_error = json.loads(final) #.decode("utf-8")
                     final_text = final_error['error']
-                    self.write({"estado":"Generada_con_errores","error":final_text})
+                    self.write({"estado":"Generada_con_errores","error":final_text['mensaje']})
                     return self.env['wk.wizard.message'].genrated_message(final_text['mensaje'], final_text['titulo'],final_text['link'])
                 # else:
                 #     return self.env['wk.wizard.message'].genrated_message('3 No hemos recibido una respuesta satisfactoria vuelve a enviarlo', 'Reenviar')    
@@ -369,6 +369,7 @@ class nomina_electronica(models.Model):
                     self.write({"estado":"Generada_con_errores","error":data_final})
                     return self.env['wk.wizard.message'].genrated_message(data_final,"Los datos no estan correctos" ,"https://navegasoft.com")
         else:
+            self.write({"estado":"Generada_con_errores","error":result})
             raise Warning(result)
             return self.env['wk.wizard.message'].genrated_message('Existen problemas de coneccion debes reportarlo con navegasoft', 'Servidor')
 
