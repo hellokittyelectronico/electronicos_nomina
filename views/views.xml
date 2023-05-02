@@ -179,8 +179,9 @@
         <field name="model">hr.contract</field>
         <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='resource_calendar_id']" position="after">
-						<field name="auxilio_de_transporte"/>
+            <xpath expr="//field[@name='calendar_mismatch']" position="after">
+						<group>
+            <field name="auxilio_de_transporte"/>
 						<field name="uvt"/>
             <field name="salario_minimo"/>
             <field name="tipo_contrato"/>
@@ -191,7 +192,7 @@
             <!-- <field name="banco"/> -->
             <field name="tipo_cuenta"/>
             <!-- <field name="numero_cuenta"/> -->
-            
+            </group>
 					</xpath>
         </field>
     </record>
