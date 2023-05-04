@@ -13,7 +13,7 @@
                 <header>
                     <button name="envio_directo" type="object"  string="Generar Documento electrónico" groups="account.group_account_invoice" attrs="{'invisible':[('estado','in',('Generada_correctamente'))]}"/>
                     <!-- ,('state','in',('draft')) -->
-                    <button name="action_cfdi_generate" type="object"  string="Imprimir DE" groups="account.group_account_invoice" attrs="{'invisible':[('estado','in',('no_generada','generada_con_errores'))]}"/>
+                    <button name="action_cfdi_generate" type="object"  string="Imprimir DE" groups="account.group_account_invoice" attrs="{'invisible':[('estado','not in',('Generada_correctamente'))]}"/>
                     <!-- ,('state','in',('draft')) -->
                 <!-- <button name="genera_cufe" type="object"  string="Generar CUFE" groups="account.group_account_invoice" attrs="{'invisible':['|',('estado','in',('generada_correctamente')),('state','in',('draft'))]}"/> -->
                 </header>
