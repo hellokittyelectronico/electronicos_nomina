@@ -328,10 +328,10 @@ class nomina_electronica(models.Model):
                         else:
                             if eval(linea.campo_tecnico):
                                 send[linea.name] = eval(linea.campo_tecnico)
-                            else:
-                                if linea.obligatorio:
-                                    self.write({"estado":"Generada_con_errores","error":"El campo esta vacio "+linea.campo_tecnico})
-                                    return self.env['wk.wizard.message'].genrated_message("El campo esta vacio "+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")    
+                            # else:
+                                # if linea.obligatorio:
+                                #     self.write({"estado":"Generada_con_errores","error":"El campo esta vacio "+linea.campo_tecnico})
+                                #     return self.env['wk.wizard.message'].genrated_message("El campo esta vacio "+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")    
                 except SyntaxError:
                     self.write({"estado":"Generada_con_errores","error":"El campo esta vacio "+linea.campo_tecnico})
                     return self.env['wk.wizard.message'].genrated_message("El campo esta vacio "+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")
@@ -369,10 +369,12 @@ class nomina_electronica(models.Model):
                     final_error = json.loads(json.dumps(final))
                     data = final_error["data"]
                     data_final = data['message']
-                    self.write({"estado":"Generada_con_errores","error":data_final,"solucion":final_text['link']})
+                    print("data_final")
+                    print(final)
+                    self.write({"estado":"Generada_con_errores","error":data_final,"solucion":"Proximamente video de solucion"})
                     return self.env['wk.wizard.message'].genrated_message(data_final,"Los datos no estan correctos" ,"https://navegasoft.com")
         else:
-            self.write({"estado":"Generada_con_errores","error":result,"solucion":final_text['link']})
+            self.write({"estado":"Generada_con_errores","error":result,"solucion":"Volver a enviar el comprobante"})
             raise Warning(result)
             return self.env['wk.wizard.message'].genrated_message('Existen problemas de coneccion debes reportarlo con navegasoft', 'Servidor')
 

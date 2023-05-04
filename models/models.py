@@ -725,9 +725,9 @@ class nomina_electronica(models.Model):
                         else:
                             if eval(linea.campo_tecnico):
                                 send[linea.name] = eval(linea.campo_tecnico)
-                            else:
-                                if linea.obligatorio:
-                                    return self.env['wk.wizard.message'].genrated_message("El campo tecnico no existe"+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")    
+                            # else:
+                            #     if linea.obligatorio:
+                            #         return self.env['wk.wizard.message'].genrated_message("El campo tecnico no existe"+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")    
                 except SyntaxError:
                     return self.env['wk.wizard.message'].genrated_message("El campo tecnico no existe"+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")
                     #pass
