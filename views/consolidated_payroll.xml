@@ -60,6 +60,7 @@
           <field name="activity_ids"/>
           <field name="message_ids"/>
         </div>
+        
     </xpath>
             <xpath expr="//page[2]" position="after">
                 <page string="Nomina electronica">
