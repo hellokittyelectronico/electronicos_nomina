@@ -54,6 +54,13 @@
                     </form>
                 </field>
             </xpath> -->
+    <xpath expr="//notebook" position="after">
+        <div class="oe_chatter">
+          <field name="message_follower_ids"/>
+          <field name="activity_ids"/>
+          <field name="message_ids"/>
+        </div>
+    </xpath>
             <xpath expr="//page[2]" position="after">
                 <page string="Nomina electronica">
                         <group cols="2">
