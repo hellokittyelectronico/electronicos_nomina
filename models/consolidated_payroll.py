@@ -193,7 +193,7 @@ class nomina_electronica(models.Model):
                                     'type': 'binary',
                                     'datas': i64,
                                     #'datas_fname': self.number+extension,
-                                    'res_model': 'hr.payslip',
+                                    'res_model': 'consolidated.payroll.slip',
                                     'res_id': self.id,
                                     })
                                 if att_id:
