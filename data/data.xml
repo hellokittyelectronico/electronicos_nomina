@@ -363,7 +363,7 @@
         <field name="name">LugarTrabajoMunicipioCiudad</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.address_home_id.state_id.code</field>
+        <field name="campo_tecnico">self.employee_id.address_home_id.city_id.code</field>
         <field name="detalle">Lugar trabajo codigo DANE municipio ciudad</field>
     </record>
     <record id="n40b" model="base_electronicos.line">
