@@ -103,6 +103,7 @@
                                 <field name="estado" readonly='1'/>
                                 <field name="transaccionID"/>
                                 <field name="error"/>
+                                <field name="solucion"/>
                             </group>
                         <!-- <div colspan="4">
                             <field name="note" placeholder="Add an internal note..."/>

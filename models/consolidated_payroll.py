@@ -27,7 +27,7 @@ class nomina_electronica(models.Model):
     estado = fields.Selection([
         ('no_generada', 'No_generada'),
         ('Generada_correctamente', 'Generada_correctamente'),
-        ('Generada_con_errores', 'Generada_con_errores'),
+        ('Generada_con_errores', 'Con_errores'),
     ], string='Estado',default="no_generada")
     prefijo = fields.Char("Prefijo")
     consecutivo = fields.Char("consecutivo")
@@ -79,6 +79,7 @@ class nomina_electronica(models.Model):
     password = fields.Char('password')
     cune = fields.Char('CUNE')
     error = fields.Char('Error')
+    solucion = fields.Char('Solucion')
     # PeriodoNomina = fields.Char('Periodo Nomina') 
     # TipoMoneda = fields.Char('TipoMoneda', default="COP") 
     
@@ -353,12 +354,12 @@ class nomina_electronica(models.Model):
                     if "transactionID" in final:
                         self.write({"impreso":False,"transaccionID":final['transactionID'],"estado":"Generada_correctamente","error":""})
                     else:
-                        self.write({"estado":"Generada_con_errores","error":final['mensaje']})
+                        self.write({"estado":"Generada_con_errores","error":final['mensaje'],"solucion":final_text['link']})
                         return self.env['wk.wizard.message'].genrated_message(final['mensaje'],final['titulo'] ,final['link'])
                 else:
                     final_error = json.loads(final) #.decode("utf-8")
                     final_text = final_error['error']
-                    self.write({"estado":"Generada_con_errores","error":final_text['mensaje']})
+                    self.write({"estado":"Generada_con_errores","error":final_text['mensaje'],"solucion":final_text['link']})
                     return self.env['wk.wizard.message'].genrated_message(final_text['mensaje'], final_text['titulo'],final_text['link'])
                 # else:
                 #     return self.env['wk.wizard.message'].genrated_message('3 No hemos recibido una respuesta satisfactoria vuelve a enviarlo', 'Reenviar')    
@@ -368,10 +369,10 @@ class nomina_electronica(models.Model):
                     final_error = json.loads(json.dumps(final))
                     data = final_error["data"]
                     data_final = data['message']
-                    self.write({"estado":"Generada_con_errores","error":data_final})
+                    self.write({"estado":"Generada_con_errores","error":data_final,"solucion":final_text['link']})
                     return self.env['wk.wizard.message'].genrated_message(data_final,"Los datos no estan correctos" ,"https://navegasoft.com")
         else:
-            self.write({"estado":"Generada_con_errores","error":result})
+            self.write({"estado":"Generada_con_errores","error":result,"solucion":final_text['link']})
             raise Warning(result)
             return self.env['wk.wizard.message'].genrated_message('Existen problemas de coneccion debes reportarlo con navegasoft', 'Servidor')
 
