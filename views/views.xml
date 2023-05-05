@@ -184,7 +184,7 @@
         <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='calendar_mismatch']" position="after">
-						<group>
+						
             <field name="auxilio_de_transporte"/>
 						<field name="uvt"/>
             <field name="salario_minimo"/>
@@ -195,8 +195,8 @@
             <field name="metodo_pago"/>
             <!-- <field name="banco"/> -->
             <field name="tipo_cuenta"/>
-            <!-- <field name="numero_cuenta"/>aaa -->
-            </group>
+            <!-- <field name="numero_cuenta"/> -->
+            
 					</xpath>
         </field>
     </record>
