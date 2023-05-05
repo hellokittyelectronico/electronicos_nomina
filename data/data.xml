@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
 <odoo>
  
-    <record id="seq_refund_salary_slip" model="ir.sequence">
+    <!-- <record id="seq_refund_salary_slip" model="ir.sequence">
         <field name="name">Refund Salary Slip</field>
         <field name="code">salary.refund</field>
         <field name="prefix">NOA</field>
         <field name="padding">3</field>
         <field name="sequence_dian_type">invoice_computer_generated</field>
-    </record>
+    </record> -->
 
     <record id="n0a" model="base_electronicos.tabla">
         <field name="id">1</field>
