@@ -149,6 +149,8 @@
                         <group string="Datos resultado">
                                 <field name="estado" readonly='1'/>
                                 <field name="transaccionID"/>
+                                <field name="error"/>
+                                <field name="solucion"/>
                             </group>
                         <!-- <div colspan="4">
                             <field name="note" placeholder="Add an internal note..."/>
@@ -170,6 +172,8 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='number']" position="after">
             <field name="estado"/>
+            <field name="error"/>
+            <field name="solucion"/>
 					</xpath>
         </field>
     </record>
@@ -191,7 +195,7 @@
             <field name="metodo_pago"/>
             <!-- <field name="banco"/> -->
             <field name="tipo_cuenta"/>
-            <!-- <field name="numero_cuenta"/> -->
+            <!-- <field name="numero_cuenta"/>aaa -->
             </group>
 					</xpath>
         </field>
@@ -209,6 +213,18 @@
 					</xpath>
         </field>
     </record>   
+
+
+    <record model="ir.actions.server" id="action_payroll_multiple">
+        <field name="name">Generar documento electronico</field>
+        <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.generate_multiple_payroll()
+        </field>
+    </record>
+
 
     <!-- <record id="nomina_atributo" model="ir.ui.view">
         <field name="name">nomina_hr_atributo</field>

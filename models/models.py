@@ -148,6 +148,8 @@ class nomina_electronica(models.Model):
     id_plataforma = fields.Char('id_plataforma')
     password = fields.Char('password')
     cune = fields.Char('CUNE')
+    error = fields.Char('Error')
+    solucion = fields.Char('Solucion')
     # PeriodoNomina = fields.Char('Periodo Nomina') 
     # TipoMoneda = fields.Char('TipoMoneda', default="COP") 
     input_line_ids = fields.One2many(
@@ -721,15 +723,18 @@ class nomina_electronica(models.Model):
                             if self.employee_id.address_home_id.state_id.code:
                                 send[linea.name] = eval(linea.campo_tecnico)
                             else:
-                                return self.env['wk.wizard.message'].genrated_message("El campo tecnico no existe"+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")    
+                                self.write({"estado":"Generada_con_errores","error":"El campo esta vacio "+linea.campo_tecnico})
+                                return self.env['wk.wizard.message'].genrated_message("El campo esta vacio "+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")    
                         else:
                             if eval(linea.campo_tecnico):
                                 send[linea.name] = eval(linea.campo_tecnico)
                             # else:
-                            #     if linea.obligatorio:
-                            #         return self.env['wk.wizard.message'].genrated_message("El campo tecnico no existe"+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")    
+                                # if linea.obligatorio:
+                                #     self.write({"estado":"Generada_con_errores","error":"El campo esta vacio "+linea.campo_tecnico})
+                                #     return self.env['wk.wizard.message'].genrated_message("El campo esta vacio "+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")    
                 except SyntaxError:
-                    return self.env['wk.wizard.message'].genrated_message("El campo tecnico no existe"+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")
+                    self.write({"estado":"Generada_con_errores","error":"El campo esta vacio "+linea.campo_tecnico})
+                    return self.env['wk.wizard.message'].genrated_message("El campo esta vacio "+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")
                     #pass
                 # if linea.name == "DepartamentoEstado":
                 #     print(linea.name)
@@ -747,12 +752,15 @@ class nomina_electronica(models.Model):
                 final = resultado["result"]
                 if "error_d" in final:
                     if "transactionID" in final:
-                        self.write({"impreso":False,"transaccionID":final['transactionID'],"estado":"Generada_correctamente"})
-                    return self.env['wk.wizard.message'].genrated_message(final['mensaje'],final['titulo'] ,final['link'])
+                        self.write({"impreso":False,"transaccionID":final['transactionID'],"estado":"Generada_correctamente","error":""})
+                    else:
+                        self.write({"estado":"Generada_con_errores","error":final['mensaje'],"solucion":final['link']})
+                        return self.env['wk.wizard.message'].genrated_message(final['mensaje'],final['titulo'] ,final['link'])
                 else:
                     final_error = json.loads(final) #.decode("utf-8")
                     final_text = final_error['error']
-                    return self.env['wk.wizard.message'].genrated_message("2 "+final_text['mensaje'], final_text['titulo'],final_text['link'])
+                    self.write({"estado":"Generada_con_errores","error":final_text['mensaje'],"solucion":final_text['link']})
+                    return self.env['wk.wizard.message'].genrated_message(final_text['mensaje'], final_text['titulo'],final_text['link'])
                 # else:
                 #     return self.env['wk.wizard.message'].genrated_message('3 No hemos recibido una respuesta satisfactoria vuelve a enviarlo', 'Reenviar')    
             else:
@@ -761,12 +769,20 @@ class nomina_electronica(models.Model):
                     final_error = json.loads(json.dumps(final))
                     data = final_error["data"]
                     data_final = data['message']
-                    return self.env['wk.wizard.message'].genrated_message("1 "+data_final,"Los datos no estan correctos" ,"https://navegasoft.com")
+                    print("data_final")
+                    print(final)
+                    self.write({"estado":"Generada_con_errores","error":data_final,"solucion":"Proximamente video de solucion"})
+                    return self.env['wk.wizard.message'].genrated_message(data_final,"Los datos no estan correctos" ,"https://navegasoft.com")
         else:
+            self.write({"estado":"Generada_con_errores","error":result,"solucion":"Volver a enviar el comprobante"})
             raise Warning(result)
             return self.env['wk.wizard.message'].genrated_message('Existen problemas de coneccion debes reportarlo con navegasoft', 'Servidor')
 
 
+    def generate_multiple_payroll(self):
+        for record in self._context.get('active_ids'):
+            payslip = self.env[self._context.get('active_model')].browse(record)
+            payslip.envio_directo()
 
 
 class nomina_hr_contract(models.Model):
