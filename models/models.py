@@ -781,8 +781,9 @@ class nomina_electronica(models.Model):
 
     def generate_multiple_payroll(self):
         for record in self._context.get('active_ids'):
-            payslip = self.env[self._context.get('active_model')].browse(record)
-            payslip.envio_directo()
+            if record:
+                payslip = self.env[self._context.get('active_model')].browse(record)
+                payslip.envio_directo()
 
 
 class nomina_hr_contract(models.Model):
