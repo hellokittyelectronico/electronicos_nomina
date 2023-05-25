@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
 <odoo>
  
-    <record id="seq_refund_salary_slip" model="ir.sequence">
+    <!-- <record id="seq_refund_salary_slip" model="ir.sequence">
         <field name="name">Refund Salary Slip</field>
         <field name="code">salary.refund</field>
         <field name="prefix">NOA</field>
         <field name="padding">3</field>
         <field name="sequence_dian_type">invoice_computer_generated</field>
-    </record>
+    </record> -->
 
     <record id="n0a" model="base_electronicos.tabla">
         <field name="id">1</field>
@@ -18,7 +18,7 @@
         <field name="name">FechaIngreso</field>
         <field name="categoria">Periodo</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.contract_id.date_start</field>
+        <field name="campo_tecnico">str(self.contract_id.date_start)</field>
         <field name="detalle">Fecha de Ingreso del trabajador a la empresa (AAAA-MM-DD)*</field>
     </record>
      <!-- <record id="n0b" model="base_electronicos.line">
@@ -34,7 +34,7 @@
         <field name="name">FechaLiquidacionInicio</field>
         <field name="categoria">Periodo</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.date_from</field>
+        <field name="campo_tecnico">str(self.date_from)</field>
         <field name="detalle">Fecha de inicio de Liquidación de Nómina (AAAA-MM-DD)*</field>
     </record>
     <record id="n2b" model="base_electronicos.line">
@@ -42,7 +42,7 @@
         <field name="name">FechaLiquidacionFin</field>
         <field name="categoria">Periodo</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.date_to</field>
+        <field name="campo_tecnico">str(self.date_to)</field>
         <field name="detalle">Fecha fin de Liquidación de Nómina (AAAA-MM-DD)*</field>
     </record>
     <record id="n3b" model="base_electronicos.line">
@@ -50,7 +50,7 @@
         <field name="name">FechaGen</field>
         <field name="categoria">Periodo</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.date_from</field>
+        <field name="campo_tecnico">str(self.date_from)</field>
         <field name="detalle">Fecha de emisión del documento (AAAA-MM-DD)*</field>
     </record>
     <record id="n4a" model="base_electronicos.line">
@@ -146,7 +146,7 @@
         <field name="name">FechaGen</field>
         <field name="categoria">informaciongeneral</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.FechaGen</field>
+        <field name="campo_tecnico">str(self.FechaGen)</field>
         <field name="detalle">Fecha de emisión del documento (AAAA-MM-DD)</field>
     </record>
     <record id="n14b" model="base_electronicos.line">
@@ -275,7 +275,7 @@
         <field name="name">FechaInicioLabores</field>
         <field name="categoria">Periodo</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.contract_id.date_start</field>
+        <field name="campo_tecnico">str(self.contract_id.date_start)</field>
         <field name="detalle">Fecha inicio labores del empleador</field>
     </record>
     <record id="n29b" model="base_electronicos.line">
@@ -363,7 +363,7 @@
         <field name="name">LugarTrabajoMunicipioCiudad</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.address_home_id.state_id.code</field>
+        <field name="campo_tecnico">self.employee_id.address_home_id.city_id.code</field>
         <field name="detalle">Lugar trabajo codigo DANE municipio ciudad</field>
     </record>
     <record id="n40b" model="base_electronicos.line">
@@ -371,7 +371,7 @@
         <field name="name">LugarTrabajoDepartamentoEstado</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.address_home_id.state_id.code[0:2]</field>
+        <field name="campo_tecnico">self.employee_id.address_home_id.state_id.code</field>
         <field name="detalle">Lugar Trabajo codigo DANE Departamento </field>
     </record>
     <record id="n41b" model="base_electronicos.line">
@@ -451,7 +451,7 @@
         <field name="name">FechaPago</field>
         <field name="categoria">Pago</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.fecha_pago</field>
+        <field name="campo_tecnico">str(self.fecha_pago)</field>
         <field name="detalle">Fecha en que se efectuo el pago</field>
     </record>
     <record id="n51b" model="base_electronicos.line">
@@ -1823,7 +1823,7 @@
         <field name="categoria">informaciongeneral</field>
         <field name="subcategoria"></field>
         <field name="obligatorio">false</field>
-        <field name="campo_tecnico">self.FechaGenPred</field>
+        <field name="campo_tecnico">str(self.FechaGenPred)</field>
         <field name="detalle">Fecha de generacion predecesor nomina</field>
     </record>
 

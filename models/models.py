@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
-
+from datetime import datetime, timedelta
+import os
+import requests
+import json 
+from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
+from odoo.tools.safe_eval import safe_eval
 
 class electronicos_nomina(models.Model):
     _inherit = 'base_electronicos.tabla'
@@ -92,7 +97,7 @@ class nomina_electronica(models.Model):
     estado = fields.Selection([
         ('no_generada', 'No_generada'),
         ('Generada_correctamente', 'Generada_correctamente'),
-        ('Generada_con_errores', 'Generada_con_errores'),
+        ('Generada_con_errores', 'Con_errores'),
     ], string='Estado',default="no_generada")
     prefijo = fields.Char("Prefijo")
     consecutivo = fields.Char("consecutivo")
@@ -100,7 +105,7 @@ class nomina_electronica(models.Model):
     departamentoestado = fields.Char("Departamento")
     municipiociudad = fields.Char("Ciudad")
     Idioma = fields.Char("Idioma",default="es")
-    
+    impreso = fields.Boolean("Impreso")
     version = fields.Char("Version",default="")
     ambiente = fields.Selection([
         ('1', 'Produccion'),
@@ -143,41 +148,116 @@ class nomina_electronica(models.Model):
     id_plataforma = fields.Char('id_plataforma')
     password = fields.Char('password')
     cune = fields.Char('CUNE')
+    error = fields.Char('Error')
+    solucion = fields.Char('Solucion')
     # PeriodoNomina = fields.Char('Periodo Nomina') 
     # TipoMoneda = fields.Char('TipoMoneda', default="COP") 
-
+    input_line_ids = fields.One2many(
+        'hr.payslip.input', 'payslip_id', string='Payslip Inputs',
+        compute='_compute_input_line_ids', store=True,copy='True',
+        readonly=False, states={'done': [('readonly', True)], 'cancel': [('readonly', True)], 'paid': [('readonly', True)]})
     # Notas = fields.Char('Notas')    
 
+    ##contrain numero de nomina
+    @api.constrains('number')
+    def _check_number(self):
+        for record in self:
+            cantidad = self.env['hr.payslip'].search([('number', '=', self.number)])
+            print(cantidad)
+            print(len(cantidad))
+            if len(cantidad) > 1:
+                raise ValidationError("Existe un comprobante con el mismo numero, por favor modifique el consecutivo de la nomina "+cantidad[0].number)
+
+    def copy(self, default=None):
+        default = dict(default or {})
+        default.update({'estado': 'no_generada','transaccionID': '','consecutivo': ''})
+        return super(nomina_electronica, self).copy(default)
+
+    def unlink(self, default=None):
+        for payslip in self:
+            if payslip.estado == 'Generada_correctamente':
+                raise UserError('No se puede eliminar una nomina que ya ha sido generada')
+        return super(nomina_electronica, self).unlink()    
+    
     #@api.multi
     def compute_refund(self,causa,tipo_nota):
+        copied_payslips = self.env['hr.payslip']
         for payslip in self:
             numero_pred = payslip.prefijo+payslip.consecutivo
             fecha_gen_pred = payslip.FechaGen
             CUNEPred = payslip.cune
-            if payslip.number:
-                number = payslip.number
-            else:
-                number = payslip.number or self.env['ir.sequence'].next_by_code('salary.refund')
+            # if payslip.number:
+            #     number = payslip.number
+            # else:
+            number = self.env['ir.sequence'].next_by_code('salary.refund')
             
             numbersequence = self.env['ir.sequence'].search([('code', '=', 'salary.refund')])
-            payslip.onchange_employee()
             prefijo = numbersequence.prefix
             longitudprefijo = len(prefijo)
             longitudsecuencia = len(number)
             consecutivo = number[longitudprefijo:longitudsecuencia]
-            # delete old payslip lines
-            payslip.line_ids.unlink()
-            # set the list of contract for which the rules have to be applied
-            # if we don't give the contract, then the rules to apply should be for all current contracts of the employee
-            contract_ids = payslip.contract_id.ids or \
-                self.get_contract(payslip.employee_id, payslip.date_from, payslip.date_to)
-            lines = [(0, 0, line) for line in self._get_payslip_lines(contract_ids, payslip.id)]
-            payslip.write({'line_ids': lines, 'number': number,'transaccionID':'',
+            print("number")
+            print(number)
+            copied_payslip = payslip.copy({
+                'credit_note': True,
+                'name': number,
+                'edited': True,
+                'state': 'verify', 'number': number,'transaccionID':'',
                         'estado':'no_generada','nota_credito':tipo_nota,'causa':causa,
                         'CUNEPred':CUNEPred,'NumeroPred':numero_pred,'FechaGenPred':fecha_gen_pred,
-                        'prefijo':prefijo,'consecutivo':consecutivo})
+                        'prefijo':prefijo,'consecutivo':consecutivo
+            })
+            for wd in copied_payslip.worked_days_line_ids:
+                wd.number_of_hours = -wd.number_of_hours
+                wd.number_of_days = -wd.number_of_days
+                wd.amount = -wd.amount
+            for line in copied_payslip.line_ids:
+                line.amount = -line.amount
+            copied_payslips |= copied_payslip
+        # formview_ref = self.env.ref('hr_payroll.view_hr_payslip_form', False)
+        # treeview_ref = self.env.ref('hr_payroll.view_hr_payslip_tree', False)
+        return copied_payslip
+        # {
+        #     'name': ("Refund Payslip"),
+        #     'view_mode': 'tree, form',
+        #     'view_id': False,
+        #     'res_model': 'hr.payslip',
+        #     'type': 'ir.actions.act_window',
+        #     'target': 'current',
+        #     'domain': [('id', 'in', copied_payslips.ids)],
+        #     'views': [(treeview_ref and treeview_ref.id or False, 'tree'), (formview_ref and formview_ref.id or False, 'form')],
+        #     'context': {}
+        # }
+        
+        
+        # for payslip in self:
+        #     numero_pred = payslip.prefijo+payslip.consecutivo
+        #     fecha_gen_pred = payslip.FechaGen
+        #     CUNEPred = payslip.cune
+        #     if payslip.number:
+        #         number = payslip.number
+        #     else:
+        #         number = payslip.number or self.env['ir.sequence'].next_by_code('salary.refund')
+            
+        #     numbersequence = self.env['ir.sequence'].search([('code', '=', 'salary.refund')])
+        #     payslip.onchange_employee()
+        #     prefijo = numbersequence.prefix
+        #     longitudprefijo = len(prefijo)
+        #     longitudsecuencia = len(number)
+        #     consecutivo = number[longitudprefijo:longitudsecuencia]
+        #     # delete old payslip lines
+        #     payslip.line_ids.unlink()
+        #     # set the list of contract for which the rules have to be applied
+        #     # if we don't give the contract, then the rules to apply should be for all current contracts of the employee
+        #     contract_ids = payslip.contract_id.ids or \
+        #         self.get_contract(payslip.employee_id, payslip.date_from, payslip.date_to)
+        #     lines = [(0, 0, line) for line in self._get_payslip_lines(contract_ids, payslip.id)]
+        #     payslip.write({'line_ids': lines, 'number': number,'transaccionID':'',
+        #                 'estado':'no_generada','nota_credito':tipo_nota,'causa':causa,
+        #                 'CUNEPred':CUNEPred,'NumeroPred':numero_pred,'FechaGenPred':fecha_gen_pred,
+        #                 'prefijo':prefijo,'consecutivo':consecutivo})
 
-        return True
+        # return True
 
     #@api.multi
     def refund_sheet(self):
@@ -474,22 +554,25 @@ class nomina_electronica(models.Model):
                     final2 = final['result']
                     final_data = json.loads(json.dumps(final2)) #eval(final2)
                     #archivo = final_data['code']
-                    module_path = modules.get_module_path('electronicos_nomina')        
-                    model = "facturas"
-                    if '\\' in module_path:
-                        src_path = '\\static\\'
-                        src_model_path = "{0}{1}\\".format('\\static', model)
-                    else:
-                        src_path = '/static/'
-                        src_model_path = "{0}{1}/".format('/static/', model)
+                    # module_path = modules.get_module_path('tabla_nomina')        
+                    # model = "facturas"
+                    # if '\\' in module_path:
+                    #     src_path = '\\static\\'
+                    #     src_model_path = "{0}{1}\\".format('\\static', model)
+                    # else:
+                    #     src_path = '/static/'
+                    #     src_model_path = "{0}{1}/".format('/static/', model)
                     
                     # if "model" folder does not exists create it
-                    os.chdir("{0}{1}".format(module_path, src_path))
-                    if not os.path.exists(model):
-                        os.makedirs(model)
+                    # os.chdir("{0}{1}".format(module_path, src_path))
+                    # if not os.path.exists(model):
+                    #     os.makedirs(model)
                     extension = ".pdf"
                     #file_path = "{0}{1}".format(module_path + src_model_path + str(name), extension)
-                    file_path = "{0}{1}".format(module_path + src_model_path + str(self.number), extension)
+                    #file_path = "{0}{1}".format(module_path + src_model_path + str(self.number), extension)
+                    file_path = "/home/odoo/static/"+str(self.number)+extension
+                    if not os.path.exists("/home/odoo/static/"):
+                        os.makedirs("/home/odoo/static/")
                     if not (os.path.exists(file_path)):
                         size =1
                         if size == 0:
@@ -499,7 +582,8 @@ class nomina_electronica(models.Model):
                             import base64 
                             print(final_data)
                             if final_data['code'] == '400':
-                                return self.env['wk.wizard.message'].genrated_message('Estamos recibiendo un codigo 400 Es necesario esperar para volver imprimir el documento', 'Es necesario esperar para volver a imprimir el documento')
+                                return self.env['wk.wizard.message'].genrated_message(final['mensaje'],final['titulo'] ,final['link'])
+                                #self.env['wk.wizard.message'].genrated_message('Estamos recibiendo un codigo 400 Es necesario esperar para volver imprimir el documento', 'Es necesario esperar para volver a imprimir el documento')
                             elif final_data['code'] == '200':
                                 print("el codigo")
                                 print(final_data['code'])
@@ -509,15 +593,17 @@ class nomina_electronica(models.Model):
                                     'name': self.number+extension,
                                     'type': 'binary',
                                     'datas': i64,
-                                    'datas_fname': self.number+extension,
+                                    #'datas_fname': self.number+extension,
                                     'res_model': 'hr.payslip',
                                     'res_id': self.id,
                                     })
                                 if att_id:
-                                    self.write({"impreso":True})
+                                    # self.write({"impreso":True})
                                     return self.env['wk.wizard.message'].genrated_message("Ve a attachment","Factura impresa" ,"https://navegasoft.com")
                             else:
-                                return self.env['wk.wizard.message'].genrated_message('Estamos recibiendo un codigo de error Es necesario esperar para volver imprimir el documento', 'Es necesario esperar para volver a imprimir el documento')
+                                print(final_data)
+                                return self.env['wk.wizard.message'].genrated_message(final_data['mensaje'],final_data['titulo'] ,final_data['link'])
+                                #self.env['wk.wizard.message'].genrated_message('Estamos recibiendo un codigo de error Es necesario esperar para volver imprimir el documento', 'Es necesario esperar para volver a imprimir el documento')
                                 
                     else:
                         raise UserError(_('Ve a attachment, Factura ya impresa.'))
@@ -578,6 +664,7 @@ class nomina_electronica(models.Model):
         import time
         now2 = datetime.now()
         current_time = now2.strftime("%H:%M:%S")
+        self.on_change_employee()
         if self.credit_note == True:
             numeracion = self.env['ir.sequence'].search([('code', '=', 'salary.refund')])
             lon_prefix = len(numeracion.prefix)
@@ -586,7 +673,12 @@ class nomina_electronica(models.Model):
             self.prefijo = numeracion.prefix
             self.consecutivo = number
         else:
-            numeracion = self.env['ir.sequence'].sudo().search([('code', '=', 'salary.slip'),('company_id', '=', self.employee_id.company_id.id)],limit=1)
+            print("la compañia del empleado")
+            print(self.employee_id.company_id.id)
+            #,('company_id', '=', self.employee_id.company_id.id)
+            numeracion = self.env['ir.sequence'].sudo().search([('code', '=', 'salary.slip')],limit=1)
+            print("la numeracion del empleado es")
+            print(numeracion.company_id)
             lon_prefix = len(numeracion.prefix)
             long_total = len(self.number)
             number = self.number[lon_prefix:long_total]
@@ -631,15 +723,18 @@ class nomina_electronica(models.Model):
                             if self.employee_id.address_home_id.state_id.code:
                                 send[linea.name] = eval(linea.campo_tecnico)
                             else:
-                                return self.env['wk.wizard.message'].genrated_message("El campo tecnico no existe"+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")    
+                                self.write({"estado":"Generada_con_errores","error":"El campo esta vacio "+linea.campo_tecnico})
+                                return self.env['wk.wizard.message'].genrated_message("El campo esta vacio "+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")    
                         else:
                             if eval(linea.campo_tecnico):
                                 send[linea.name] = eval(linea.campo_tecnico)
-                            else:
-                                if linea.obligatorio:
-                                    return self.env['wk.wizard.message'].genrated_message("El campo tecnico no existe"+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")    
+                            # else:
+                                # if linea.obligatorio:
+                                #     self.write({"estado":"Generada_con_errores","error":"El campo esta vacio "+linea.campo_tecnico})
+                                #     return self.env['wk.wizard.message'].genrated_message("El campo esta vacio "+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")    
                 except SyntaxError:
-                    return self.env['wk.wizard.message'].genrated_message("El campo tecnico no existe"+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")
+                    self.write({"estado":"Generada_con_errores","error":"El campo esta vacio "+linea.campo_tecnico})
+                    return self.env['wk.wizard.message'].genrated_message("El campo esta vacio "+linea.campo_tecnico,"Error en el campo"+linea.name,"https://navegasoft.com")
                     #pass
                 # if linea.name == "DepartamentoEstado":
                 #     print(linea.name)
@@ -657,12 +752,15 @@ class nomina_electronica(models.Model):
                 final = resultado["result"]
                 if "error_d" in final:
                     if "transactionID" in final:
-                        self.write({"impreso":False,"transaccionID":final['transactionID'],"estado":"Generada_correctamente"})
-                    return self.env['wk.wizard.message'].genrated_message(final['mensaje'],final['titulo'] ,final['link'])
+                        self.write({"impreso":False,"transaccionID":final['transactionID'],"estado":"Generada_correctamente","error":""})
+                    else:
+                        self.write({"estado":"Generada_con_errores","error":final['mensaje'],"solucion":final['link']})
+                        return self.env['wk.wizard.message'].genrated_message(final['mensaje'],final['titulo'] ,final['link'])
                 else:
                     final_error = json.loads(final) #.decode("utf-8")
                     final_text = final_error['error']
-                    return self.env['wk.wizard.message'].genrated_message("2 "+final_text['mensaje'], final_text['titulo'],final_text['link'])
+                    self.write({"estado":"Generada_con_errores","error":final_text['mensaje'],"solucion":final_text['link']})
+                    return self.env['wk.wizard.message'].genrated_message(final_text['mensaje'], final_text['titulo'],final_text['link'])
                 # else:
                 #     return self.env['wk.wizard.message'].genrated_message('3 No hemos recibido una respuesta satisfactoria vuelve a enviarlo', 'Reenviar')    
             else:
@@ -671,12 +769,21 @@ class nomina_electronica(models.Model):
                     final_error = json.loads(json.dumps(final))
                     data = final_error["data"]
                     data_final = data['message']
-                    return self.env['wk.wizard.message'].genrated_message("1 "+data_final,"Los datos no estan correctos" ,"https://navegasoft.com")
+                    print("data_final")
+                    print(final)
+                    self.write({"estado":"Generada_con_errores","error":data_final,"solucion":"Proximamente video de solucion"})
+                    return self.env['wk.wizard.message'].genrated_message(data_final,"Los datos no estan correctos" ,"https://navegasoft.com")
         else:
+            self.write({"estado":"Generada_con_errores","error":result,"solucion":"Volver a enviar el comprobante"})
             raise Warning(result)
             return self.env['wk.wizard.message'].genrated_message('Existen problemas de coneccion debes reportarlo con navegasoft', 'Servidor')
 
 
+    def generate_multiple_payroll(self):
+        for record in self._context.get('active_ids'):
+            if record:
+                payslip = self.env[self._context.get('active_model')].browse(record)
+                payslip.envio_directo()
 
 
 class nomina_hr_contract(models.Model):
