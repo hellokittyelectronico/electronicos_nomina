@@ -193,6 +193,8 @@ class nomina_electronica(models.Model):
             
             numbersequence = self.env['ir.sequence'].search([('code', '=', 'salary.refund')])
             prefijo = numbersequence.prefix
+            if len(prefijo) == 0:
+                raise UserError('No existe un prefijo en la configuracion de la nota credito de la nomina se configura en la secuencia salary.refund')
             longitudprefijo = len(prefijo)
             longitudsecuencia = len(number)
             consecutivo = number[longitudprefijo:longitudsecuencia]
