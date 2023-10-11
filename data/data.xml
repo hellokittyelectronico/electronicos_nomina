@@ -371,7 +371,7 @@
         <field name="name">LugarTrabajoDepartamentoEstado</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.address_home_id.state_id.code[0:2]</field>
+        <field name="campo_tecnico">self.employee_id.address_home_id.state_id.code</field>
         <field name="detalle">Lugar Trabajo codigo DANE Departamento </field>
     </record>
     <record id="n41b" model="base_electronicos.line">

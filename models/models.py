@@ -783,8 +783,9 @@ class nomina_electronica(models.Model):
 
     def generate_multiple_payroll(self):
         for record in self._context.get('active_ids'):
-            payslip = self.env[self._context.get('active_model')].browse(record)
-            payslip.envio_directo()
+            if record:
+                payslip = self.env[self._context.get('active_model')].browse(record)
+                payslip.envio_directo()
 
 
 class nomina_hr_contract(models.Model):
@@ -843,15 +844,15 @@ class nomina_hr_contract(models.Model):
     sub_tipo_trabajador = fields.Selection([
         ('00', 'No Aplica'),
         ('01', 'Dependiente pensionado por vejez activo'),
-        ('02', 'Independiente pensionado por vejez activo'),
-        ('03', 'Cotizante no obligado a cotizar a pensión por edad'),
-        ('04', 'Cotizante con requisitos cumplidos para pensión'),
-        ('12', 'Cotizante a quien se le ha reconocido indemnización sustitutiva o devolución de saldos'),
-        ('16', 'Cotizante perteneciente a un régimen de exceptuado de pensiones a entidades autorizadas para recibir aportes exclusivamente de un grupo de sus propios'),
-        ('18', 'Cotizante pensionado con mesada superior a 25 smlmv'),
-        ('19', 'Residente en el exterior afiliado voluntario al sistema general de pensiones y/o afiliado'),
-        ('20', 'Conductores del servicio público de transporte terrestre automotor individual de pasajeros en vehículos taxi decreto 1047 de 2014'),
-        ('21', 'Conductores servicio taxi no aporte pensión dec. 1047'),
+        # ('02', 'Independiente pensionado por vejez activo'),
+        # ('03', 'Cotizante no obligado a cotizar a pensión por edad'),
+        # ('04', 'Cotizante con requisitos cumplidos para pensión'),
+        # ('12', 'Cotizante a quien se le ha reconocido indemnización sustitutiva o devolución de saldos'),
+        # ('16', 'Cotizante perteneciente a un régimen de exceptuado de pensiones a entidades autorizadas para recibir aportes exclusivamente de un grupo de sus propios'),
+        # ('18', 'Cotizante pensionado con mesada superior a 25 smlmv'),
+        # ('19', 'Residente en el exterior afiliado voluntario al sistema general de pensiones y/o afiliado'),
+        # ('20', 'Conductores del servicio público de transporte terrestre automotor individual de pasajeros en vehículos taxi decreto 1047 de 2014'),
+        # ('21', 'Conductores servicio taxi no aporte pensión dec. 1047'),
         ], string='Subtipo de Trabajador')
     AltoRiegoPension = fields.Selection([
         ('false', 'NO'),
