@@ -29,7 +29,7 @@
         'data/data.xml',
         'views/views.xml',
         'views/templates.xml',
-        #'views/consolidated_payroll.xml',
+        'views/consolidated_payroll.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
