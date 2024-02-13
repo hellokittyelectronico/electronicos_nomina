@@ -750,8 +750,12 @@ class nomina_electronica(models.Model):
         result = requests.post(urlini,headers=headers,data = json.dumps(send))
         if result.status_code == 200:
             resultado = json.loads(result.text)
+            print("resultado")
+            print(resultado)
             if "result" in resultado:
                 final = resultado["result"]
+                print("final")
+                print(final)
                 if "error_d" in final:
                     if "transactionID" in final:
                         self.write({"impreso":False,"transaccionID":final['transactionID'],"estado":"Generada_correctamente","error":""})
