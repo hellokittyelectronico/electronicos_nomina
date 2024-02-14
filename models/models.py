@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import os
 import requests
 import json 
-from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
+from odoo.exceptions import AccessError, UserError,  ValidationError
 from odoo.tools.safe_eval import safe_eval
 
 class electronicos_nomina(models.Model):

@@ -2,7 +2,7 @@ from odoo import models, fields, modules,tools , api,_
 import os
 import requests
 import json 
-from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
+from odoo.exceptions import AccessError, UserError,  ValidationError, Warning
 import babel
 from odoo.tools.safe_eval import safe_eval
 
