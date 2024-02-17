@@ -11,7 +11,8 @@
               <group  string="Datos">
                 <field name="name"/>
               </group>
-              <field name="generales_id" string="Campos" attrs="{'invisible':[('name','!=','Nómina electrónica')]}" >
+              <!-- attrs="{'invisible':[('name','!=','Nómina electrónica')]}" -->
+              <field name="generales_id" string="Campos" invisible = "name == 'Nómina electrónica'"  >
               <tree>
                 <field name="name"/>
                 <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
@@ -69,8 +70,13 @@
         <field name="arch" type="xml">
             <xpath expr="//button[@name='action_print_payslip']" position="after">
                  <!-- states="draft,open"   -->
-                <button name="envio_directo" type="object"  string="Generar Documento electrónico" groups="account.group_account_invoice" attrs="{'invisible':['|',('estado','in',('Generada_correctamente')),('state','in',('draft'))]}"/>
-                <button name="action_cfdi_generate" type="object"  string="Imprimir DE" groups="account.group_account_invoice" attrs="{'invisible':['|',('estado','in',('no_generada','generada_con_errores')),('state','in',('draft'))]}"/>
+                <button name="envio_directo" type="object"  string="Generar Documento electrónico" groups="account.group_account_invoice" 
+                invisible ="estado in 'Generada_correctamente' or state in 'draft'"/>
+                <!-- attrs="{'invisible':['|',('estado','in',('Generada_correctamente')),('state','in',('draft'))]}" -->
+                
+                <!-- attrs="{'invisible':['|',('estado','in',('no_generada','generada_con_errores')),('state','in',('draft'))]}" -->
+                <button name="action_cfdi_generate" type="object"  string="Imprimir DE" groups="account.group_account_invoice" 
+                invisible ="estado in ['no_generada','generada_con_errores'] or state in 'draft'" />
                 
                 <!-- <button name="genera_cufe" type="object"  string="Generar CUFE" groups="account.group_account_invoice" attrs="{'invisible':['|',('estado','in',('generada_correctamente')),('state','in',('draft'))]}"/> -->
                 
@@ -80,11 +86,12 @@
                 <field name="number" readonly="1"/>
                 <group>
                 <field name="fecha_pago" />
-                <field name="nota_credito" attrs="{'invisible':[('credit_note','=',False)]}"/>
-                <field name="causa" attrs="{'invisible':[('credit_note','=',False)]}"/>
-                <field name="CUNEPred" attrs="{'invisible':[('credit_note','=',False)]}"/>
-                <field name="NumeroPred" attrs="{'invisible':[('credit_note','=',False)]}"/>
-                <field name="FechaGenPred" attrs="{'invisible':[('credit_note','=',False)]}"/>
+                <!-- attrs="{'invisible':[('credit_note','=',False)]}" -->
+                <field name="nota_credito" invisible ="credit_note == False" />
+                <field name="causa" invisible ="credit_note == False"/>
+                <field name="CUNEPred" invisible ="credit_note == False"/>
+                <field name="NumeroPred" invisible ="credit_note == False"/>
+                <field name="FechaGenPred" invisible ="credit_note == False"/>
                 </group>
             </xpath>
             <!-- <xpath expr="//field[@name='input_line_ids']" position="replace">
@@ -113,7 +120,6 @@
                 <page string="Nomina electronica">
                         <group cols="2">
                             <group string="Datos Entrada">
-                                
                                 <field name="prefijo" readonly="1"/>
                                 <field name="consecutivo" readonly="1"/>
                                 <field name="paisgeneracion"/>
