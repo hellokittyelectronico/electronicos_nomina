@@ -152,11 +152,13 @@ class nomina_electronica(models.Model):
     solucion = fields.Char('Solucion')
     # PeriodoNomina = fields.Char('Periodo Nomina') 
     # TipoMoneda = fields.Char('TipoMoneda', default="COP") 
-    input_line_ids = fields.One2many(
-        'hr.payslip.input', 'payslip_id', string='Payslip Inputs',
-        compute='_compute_input_line_ids', store=True,copy='True',
-        readonly=False, states={'done': [('readonly', True)], 'cancel': [('readonly', True)], 'paid': [('readonly', True)]})
+    # input_line_ids = fields.One2many(
+    #     'hr.payslip.input', 'payslip_id', string='Payslip Inputs',
+    #     compute='_compute_input_line_ids', store=True,copy='True',
+    #     readonly=False #, states={'done': [('readonly', True)], 'cancel': [('readonly', True)], 'paid': [('readonly', True)]}
+    #     )
     # Notas = fields.Char('Notas')    
+
 
     ##contrain numero de nomina
     @api.constrains('number')

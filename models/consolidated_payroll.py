@@ -2,7 +2,7 @@ from odoo import models, fields, modules,tools , api,_
 import os
 import requests
 import json 
-from odoo.exceptions import AccessError, UserError,  ValidationError, Warning
+from odoo.exceptions import AccessError, UserError,  ValidationError
 import babel
 from odoo.tools.safe_eval import safe_eval
 
@@ -90,7 +90,7 @@ class nomina_electronica(models.Model):
 
     credit_note = fields.Boolean(
         string='Credit Note', readonly=True,
-        states={'draft': [('readonly', False)], 'verify': [('readonly', False)]},
+        #states={'draft': [('readonly', False)], 'verify': [('readonly', False)]},
         help="Indicates this payslip has a refund of another")
 
     #@api.onchange('employee_id')
