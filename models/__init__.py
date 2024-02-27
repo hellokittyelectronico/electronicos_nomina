@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 
 from . import models
-#from . import consolidated_payroll
+from . import consolidated_payroll

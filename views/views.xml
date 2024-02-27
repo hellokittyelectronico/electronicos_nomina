@@ -7,55 +7,54 @@
       <field name="inherit_id" ref="base_electronicos.form"/>
       <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="after">
-        
               <group  string="Datos">
                 <field name="name"/>
               </group>
               <!-- attrs="{'invisible':[('name','!=','Nómina electrónica')]}" -->
               <field name="generales_id" string="Campos" invisible = "name != 'Nómina'"  >
-              <tree>
-                <field name="name"/>
-                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
-              
-                <field name="RazonSocial"/>
-                <field name="PrimerApellido"/>
-                <field name="SegundoApellido"/>
-                <field name="PrimerNombre"/>
-                <field name="OtrosNombres"/>
-                <field name="NIT"/>
-                <field name="DV"/>
-                <field name="id_plataforma"/>
-                <field name="password"/>
-              </tree>
-              <form>
-                <group>
-                  <field name="name"/>
-                  <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
-                  <field name="paisgeneracion"/>
-                  <field name="departamentoestado"/>
-                  <field name="municipiociudad"/>
-                  <field name="Idioma"/>
-                  <field name="version"/>
-                  <field name="ambiente"/>
-                  <field name="tipoXML"/>
-                  <field name="Algoritmo"/>
-                  <field name="TipoMoneda"/>
-                  <field name="PeriodoNomina"/>
-                  <field name="RazonSocial"/>
-                  <field name="PrimerApellido"/>
-                  <field name="SegundoApellido"/>
-                  <field name="PrimerNombre"/>
-                  <field name="OtrosNombres"/>
-                  <field name="NIT"/>
-                  <field name="DV"/>
-                  <field name="id_plataforma"/>
-                  <field name="password"/>
-                  <field name="PaisEmpleador"/>
-                  <field name="MunicipioCiudadEmpleador"/>
-                  <field name="DepartamentoEstadoEmpleador"/>
-                  <field name="DireccionEmpleador"/>
-                </group>
-             </form>
+                  <tree>
+                    <field name="name"/>
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                  
+                    <field name="RazonSocial"/>
+                    <field name="PrimerApellido"/>
+                    <field name="SegundoApellido"/>
+                    <field name="PrimerNombre"/>
+                    <field name="OtrosNombres"/>
+                    <field name="NIT"/>
+                    <field name="DV"/>
+                    <field name="id_plataforma"/>
+                    <field name="password"/>
+                  </tree>
+                <form>
+                  <group>
+                    <field name="name"/>
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                    <field name="paisgeneracion"/>
+                    <field name="departamentoestado"/>
+                    <field name="municipiociudad"/>
+                    <field name="Idioma"/>
+                    <field name="version"/>
+                    <field name="ambiente"/>
+                    <field name="tipoXML"/>
+                    <field name="Algoritmo"/>
+                    <field name="TipoMoneda"/>
+                    <field name="PeriodoNomina"/>
+                    <field name="RazonSocial"/>
+                    <field name="PrimerApellido"/>
+                    <field name="SegundoApellido"/>
+                    <field name="PrimerNombre"/>
+                    <field name="OtrosNombres"/>
+                    <field name="NIT"/>
+                    <field name="DV"/>
+                    <field name="id_plataforma"/>
+                    <field name="password"/>
+                    <field name="PaisEmpleador"/>
+                    <field name="MunicipioCiudadEmpleador"/>
+                    <field name="DepartamentoEstadoEmpleador"/>
+                    <field name="DireccionEmpleador"/>
+                  </group>
+              </form>
              </field>        
         
         </xpath>   
