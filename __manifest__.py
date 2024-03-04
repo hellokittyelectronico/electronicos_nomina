@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','base_electronicos','hr_payroll','l10n_co_bases','consolidated_payroll'], #
+    'depends': ['base','base_electronicos','hr_payroll','l10n_co_bases'], #,'consolidated_payroll'
 
     # always loaded
     'data': [
