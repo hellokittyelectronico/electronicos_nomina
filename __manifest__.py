@@ -7,11 +7,11 @@
         subtitle on modules listing or apps.openerp.com""",
 
     'description': """
-        Long description of module's purpose
+        Agrega funcionalidad para enviar documento electronico nomina
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Alan",
+    'website': "http://www.navegasoft.com",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/11.0/odoo/addons/base/module/module_data.xml

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import http
+# from odoo import http
 
 # class ElectronicosNomina(http.Controller):
 #     @http.route('/electronicos_nomina/electronicos_nomina/', auth='public')
