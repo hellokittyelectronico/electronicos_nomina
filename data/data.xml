@@ -307,7 +307,7 @@
         <field name="name">TipoDocumento</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.address_home_id.vat_type</field>
+        <field name="campo_tecnico">self.employee_id.address_id.vat_type</field>
         <field name="detalle">Tipo documento del trabajador</field>
     </record>
     <record id="n33b" model="base_electronicos.line">
@@ -315,7 +315,7 @@
         <field name="name">NumeroDocumento</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.address_home_id.vat</field>
+        <field name="campo_tecnico">self.employee_id.address_id.vat</field>
         <field name="detalle">Numero documento trabajador</field>
     </record>
     <record id="n34b" model="base_electronicos.line">
@@ -323,7 +323,7 @@
         <field name="name">PrimerApellido</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.address_home_id.last_name</field>
+        <field name="campo_tecnico">self.employee_id.address_id.last_name</field>
         <field name="detalle">Primer apellido trabajador</field>
     </record>
     <record id="n35b" model="base_electronicos.line">
@@ -339,7 +339,7 @@
         <field name="name">PrimerNombre</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">false</field>
-        <field name="campo_tecnico">self.employee_id.address_home_id.first_name</field>
+        <field name="campo_tecnico">self.employee_id.address_id.first_name</field>
         <field name="detalle">Primer nombre del trabajador</field>
     </record>
     <record id="n37b" model="base_electronicos.line">
@@ -347,7 +347,7 @@
         <field name="name">OtrosNombres</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">false</field>
-        <field name="campo_tecnico">self.employee_id.address_home_id.middle_name</field>
+        <field name="campo_tecnico">self.employee_id.address_id.middle_name</field>
         <field name="detalle">OtrosNombres Trabajador</field>
     </record>
     <record id="n38b" model="base_electronicos.line">
@@ -355,7 +355,7 @@
         <field name="name">LugarTrabajoPais</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">false</field>
-        <field name="campo_tecnico">self.employee_id.address_home_id.country_id.code</field>
+        <field name="campo_tecnico">self.employee_id.address_id.country_id.code</field>
         <field name="detalle">Lugar Trabajo Pais</field>
     </record>
     <record id="n39b" model="base_electronicos.line">
@@ -363,7 +363,7 @@
         <field name="name">LugarTrabajoMunicipioCiudad</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.address_home_id.city_id.code</field>
+        <field name="campo_tecnico">self.employee_id.address_id.city_id.code</field>
         <field name="detalle">Lugar trabajo codigo DANE municipio ciudad</field>
     </record>
     <record id="n40b" model="base_electronicos.line">
@@ -371,7 +371,7 @@
         <field name="name">LugarTrabajoDepartamentoEstado</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.address_home_id.state_id.code</field>
+        <field name="campo_tecnico">self.employee_id.address_id.state_id.code</field>
         <field name="detalle">Lugar Trabajo codigo DANE Departamento </field>
     </record>
     <record id="n41b" model="base_electronicos.line">
@@ -379,7 +379,7 @@
         <field name="name">LugarTrabajoDireccion</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.address_home_id.street</field>
+        <field name="campo_tecnico">self.employee_id.address_id.street</field>
         <field name="detalle">Lugar trabajo direccion</field>
     </record>
     <record id="n42b" model="base_electronicos.line">
@@ -1828,7 +1828,3 @@
     </record>
 
 </odoo>
-
-
-
-

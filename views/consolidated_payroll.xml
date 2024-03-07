@@ -24,15 +24,15 @@
         <!-- states="draft,open"  attrs="{'invisible':['|',('estado_factura','in',('factura_correcta')),('state','in',('draft','open'))]}" -->
                 <field name="number" readonly="1"/>
                 <group>
-                <field name="fecha_pago" />
-                <field name="credit_note" />
-                <!-- attrs="{'invisible':[('credit_note','=',False)]}" -->
-                <field name="nota_credito" invisible= "credit_note == False"/>
+                    <field name="fecha_pago" />
+                    <field name="credit_note" />
+                    <!-- attrs="{'invisible':[('credit_note','=',False)]}" -->
+                    <field name="nota_credito" invisible= "credit_note == False"/>
 
-                <field name="causa" invisible= "credit_note == False"/>
-                <field name="CUNEPred" invisible= "credit_note == False"/>
-                <field name="NumeroPred" invisible= "credit_note == False"/>
-                <field name="FechaGenPred" invisible= "credit_note == False"/>
+                    <field name="causa" invisible= "credit_note == False"/>
+                    <field name="CUNEPred" invisible= "credit_note == False"/>
+                    <field name="NumeroPred" invisible= "credit_note == False"/>
+                    <field name="FechaGenPred" invisible= "credit_note == False"/>
                 </group>
             </xpath>
             <!-- <xpath expr="//field[@name='input_line_ids']" position="replace">
