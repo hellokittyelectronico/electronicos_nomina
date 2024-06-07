@@ -951,6 +951,67 @@ class nomina_hr_contract(models.Model):
         ('ZZZ', 'Acuerdo mutuo'),
         ], string='Metodo de pago',default='10') 
 
+
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+
+    def _get_available_regime(self):
+        return [
+            ('48', '48 - Responsable del impuesto sobre las ventas - IVA'),
+            ('49', '49 - No responsable del IVA'),
+        ]
+
+    first_name = fields.Char(
+        string="First Name",
+    )
+    dv_vat = fields.Char('DV', default=0)
+    
+    vat_vd = fields.Char(
+        string="Digito Verificacion",
+    )
+    vat_dv = fields.Char(
+        string="Digito Verificacion",
+    )
+    middle_name = fields.Char(
+        string="Middle Name",
+    )
+    last_name = fields.Char(
+        string="Last Name",
+    )
+    second_last_name = fields.Char(
+        string="Second Last Name",
+    )
+    vat_ref = fields.Char(
+        string="NIT Formateado",
+        compute="_compute_vat_ref",
+        readonly=True,
+    )
+    vat_type = fields.Selection(
+        string=u'Tipo de Documento',
+        selection=[
+            ('11', u'11 - Registro civil de nacimiento'),
+            ('12', u'12 - Tarjeta de identidad'),
+            ('13', u'13 - Cédula de ciudadanía'),
+            ('21', u'21 - Tarjeta de extranjería'),
+            ('22', u'22 - Cédula de extranjería'),
+            ('31', u'31 - NIT/RUT'),
+            ('41', u'41 - Pasaporte'),
+            ('42', u'42 - Documento de identificación extranjero'),
+            ('47', u'47 - Permiso especial de permanencia'),
+            ('50', u'50 - NIT de otro pais'),
+            ('91', u'91 - NUIP'),
+        ],
+        help = u'Identificacion del Cliente, segun los tipos definidos por la DIAN.',
+    )
+    vat_vd = fields.Integer(
+        string=u"Digito Verificación",
+    )
+    ciiu_id = fields.Many2one(
+        string='Actividad CIIU',
+        comodel_name='res.ciiu',
+        domain=[('type', '!=', 'view')],
+        help=u'Código industrial internacional uniforme (CIIU)'
+    )
 # class electronicos_nomina(models.Model):
 #     _name = 'electronicos_nomina.electronicos_nomina'
 
