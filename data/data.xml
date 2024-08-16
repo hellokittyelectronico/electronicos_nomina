@@ -307,7 +307,7 @@
         <field name="name">TipoDocumento</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.address_id.vat_type</field>
+        <field name="campo_tecnico">self.employee_id.employee_address_home.vat_type</field>
         <field name="detalle">Tipo documento del trabajador</field>
     </record>
     <record id="n33b" model="base_electronicos.line">
@@ -315,7 +315,7 @@
         <field name="name">NumeroDocumento</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.address_id.vat</field>
+        <field name="campo_tecnico">self.employee_id.employee_address_home.vat</field>
         <field name="detalle">Numero documento trabajador</field>
     </record>
     <record id="n34b" model="base_electronicos.line">
