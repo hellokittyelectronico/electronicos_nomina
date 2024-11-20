@@ -12,7 +12,7 @@
               </group>
               <!-- attrs="{'invisible':[('name','!=','Nómina electrónica')]}" -->
               <field name="generales_id" string="Campos" invisible = "name != 'Nómina'"  >
-                  <tree>
+                  <list>
                     <field name="name"/>
                     <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                   
@@ -25,7 +25,7 @@
                     <field name="DV"/>
                     <field name="id_plataforma"/>
                     <field name="password"/>
-                  </tree>
+                  </list>
                 <form>
                   <group>
                     <field name="name"/>
