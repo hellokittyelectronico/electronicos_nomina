@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 {
     'name': "electronicos_nomina",
 
@@ -17,10 +16,10 @@
     # Check https://github.com/odoo/odoo/blob/11.0/odoo/addons/base/module/module_data.xml
     # for the full list
     'category': 'Uncategorized',
-    'version': '0.1',
+    'version': "18.0.1.0.0",
 
     # any module necessary for this one to work correctly
-    'depends': ['base','base_electronicos','hr_payroll','l10n_co_bases'], #,'consolidated_payroll'
+    'depends': ['base','base_electronicos','hr_payroll','l10n_co_bases','consolidated_payroll'], #,'consolidated_payroll'
 
     # always loaded
     'data': [

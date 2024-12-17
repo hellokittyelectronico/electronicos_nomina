@@ -37,14 +37,14 @@
             </xpath>
             <!-- <xpath expr="//field[@name='input_line_ids']" position="replace">
               <field name="input_line_ids" colspan="5" nolabel="1">
-                    <tree string="Input Data" editable="bottom">
+                    <list string="Input Data" editable="bottom">
                         <field name="name"/>
                         <field name="code"/>
                         <field name="cantidad"/>
                         <field name="amount"/>
                         <field name="contract_id"/>
                         <field name="sequence" invisible="True"/>
-                    </tree>
+                    </list>
                     <form string="Payslip Line">
                         <group col="5">
                             <field name="name"/>
@@ -58,11 +58,7 @@
                 </field>
             </xpath> -->
     <xpath expr="//notebook" position="after">
-        <div class="oe_chatter">
-          <field name="message_follower_ids"/>
-          <field name="activity_ids"/>
-          <field name="message_ids"/>
-        </div>
+        <chatter/>
         
     </xpath>
             <xpath expr="//page[2]" position="after">

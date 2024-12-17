@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 # Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>)
 # See LICENSE file for full copyright and licensing details.
@@ -26,14 +25,14 @@ class WkWizardMessage(models.TransientModel):
 		treeview_ref = self.env.ref('hr_payroll.view_hr_payslip_tree', False)
 		return {
             'name': ("Refund Payslip"),
-            'view_mode': 'tree, form',
+            'view_mode': 'list, form',
             'view_id': False,
             'view_type': 'form',
             'res_model': 'hr.payslip',
             'type': 'ir.actions.act_window',
             'target': 'current',
             'domain': "[('id', 'in', %s)]" % copied_payslip.ids,
-            'views': [(treeview_ref and treeview_ref.id or False, 'tree'), (formview_ref and formview_ref.id or False, 'form')],
+            'views': [(treeview_ref and treeview_ref.id or False, 'list'), (formview_ref and formview_ref.id or False, 'form')],
             'context': {}
         }
 		return  #self._export(report_type)

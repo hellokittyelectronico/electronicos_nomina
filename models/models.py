@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
 from datetime import datetime, timedelta
@@ -223,13 +222,13 @@ class nomina_electronica(models.Model):
         return copied_payslip
         # {
         #     'name': ("Refund Payslip"),
-        #     'view_mode': 'tree, form',
+        #     'view_mode': 'list, form',
         #     'view_id': False,
         #     'res_model': 'hr.payslip',
         #     'type': 'ir.actions.act_window',
         #     'target': 'current',
         #     'domain': [('id', 'in', copied_payslips.ids)],
-        #     'views': [(treeview_ref and treeview_ref.id or False, 'tree'), (formview_ref and formview_ref.id or False, 'form')],
+        #     'views': [(treeview_ref and treeview_ref.id or False, 'list'), (formview_ref and formview_ref.id or False, 'form')],
         #     'context': {}
         # }
         
