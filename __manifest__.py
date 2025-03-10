@@ -31,6 +31,7 @@
         'views/consolidated_payroll.xml',
     ],
     # only loaded in demonstration mode
+    'license': 'OPL-1',
     'demo': [
         'demo/demo.xml',
     ],
