@@ -307,7 +307,7 @@
         <field name="name">TipoDocumento</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.employee_address_home.vat_type</field>
+        <field name="campo_tecnico">self.employee_id.employee_address_home.l10n_latam_identification_type_id.name</field>
         <field name="detalle">Tipo documento del trabajador</field>
     </record>
     <record id="n33b" model="base_electronicos.line">
