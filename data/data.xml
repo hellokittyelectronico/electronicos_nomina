@@ -807,6 +807,32 @@
         <field name="campo_tecnico"></field>
         <field name="detalle">Pago Vacaciones Comunes</field>
     </record>
+        <record id="n78bvacas" model="base_electronicos.line">
+        <field name="mp_id" ref="n0a"/>
+        <field name="name">CantidadVacacionesCompensadas</field>
+        <field name="codigo">VacacionesCompensadas</field>
+        <field name="dias">true</field>
+        <field name="porcentaje">false</field>
+        <field name="horas">false</field>
+        <field name="categoria">Devengado</field>
+        <field name="subcategoria">VacacionesCompensadas</field>
+        <field name="obligatorio">false</field>
+        <field name="campo_tecnico"></field>
+        <field name="detalle">Cantidad de Dias Vacaciones Compensadas</field>
+    </record>
+    <record id="n79bvacas" model="base_electronicos.line">
+        <field name="mp_id" ref="n0a"/>
+        <field name="name">PagoVacacionesCompensadas</field>
+        <field name="codigo">VacacionesCompensadas</field>
+        <field name="dias">false</field>
+        <field name="porcentaje">false</field>
+        <field name="horas">false</field>
+        <field name="categoria">Devengado</field>
+        <field name="subcategoria">VacacionesCompensadas</field>
+        <field name="obligatorio">false</field>
+        <field name="campo_tecnico"></field>
+        <field name="detalle">Pago Vacaciones Compensadas</field>
+    </record>
     <record id="n80b" model="base_electronicos.line">
         <field name="mp_id" ref="n0a"/>
         <field name="name">CantidadPrimas</field>
