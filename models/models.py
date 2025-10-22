@@ -796,6 +796,18 @@ class nomina_hr_contract(models.Model):
     _name = 'hr.contract'
     _inherit = 'hr.contract'
 
+    tipo_de_auxilio= fields.Selection([
+        ('1', 'Auxilio de transporte'),
+        ('2', 'Auxilio de conectividad'),
+    ], string='Tipo de auxilio')
+    riesgo_arl = fields.Selection([
+        ('1', 'Clase I - Riesgo mínimo'),
+        ('2', 'Clase II - Riesgo medio'),
+        ('3', 'Clase III - Riesgo alto'),
+        ('4', 'Clase IV - Riesgo muy alto'),
+        ('5', 'Clase V - Riesgo máximo'),
+    ], string='Riesgo ARL')
+    pensionado = fields.Boolean("Pensionado")
     auxilio_de_transporte = fields.Float("Auxilio de transporte")
     uvt =  fields.Float("UVT")
     salario_minimo = fields.Float("Salario Minimo")
@@ -861,7 +873,7 @@ class nomina_hr_contract(models.Model):
     AltoRiegoPension = fields.Selection([
         ('false', 'NO'),
         ('true', 'SI'),
-        ], string='Alto Riego Pension',default='false')
+        ], string='Alto Riesgo Pension',default='false')
     SalarioIntegral = fields.Selection([
         ('false', 'NO'),
         ('true', 'SI'),

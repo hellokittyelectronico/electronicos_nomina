@@ -185,6 +185,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='calendar_mismatch']" position="after">
 						
+            <field name="tipo_de_auxilio"/>  
             <field name="auxilio_de_transporte"/>
 						<field name="uvt"/>
             <field name="salario_minimo"/>
@@ -192,6 +193,8 @@
 						<field name="tipo_trabajador"/>
             <field name="sub_tipo_trabajador"/>
             <field name="AltoRiegoPension"/>
+            <field name="pensionado"/>
+            <field name="riesgo_arl"/>
             <field name="metodo_pago"/>
             <!-- <field name="banco"/> -->
             <field name="tipo_cuenta"/>
@@ -200,6 +203,8 @@
 					</xpath>
         </field>
     </record>
+
+
 
     <record id="nomina_rule_salary" model="ir.ui.view">
         <field name="name">nomina_rule_salary</field>
