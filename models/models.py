@@ -794,8 +794,8 @@ class nomina_electronica(models.Model):
 
 
 class nomina_hr_contract(models.Model):
-    _name = 'hr.contract'
-    _inherit = 'hr.contract'
+    _name = 'hr.employee'
+    _inherit = 'hr.employee'
 
     auxilio_de_transporte = fields.Float("Auxilio de transporte")
     uvt =  fields.Float("UVT")

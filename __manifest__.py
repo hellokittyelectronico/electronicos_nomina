@@ -16,10 +16,10 @@
     # Check https://github.com/odoo/odoo/blob/11.0/odoo/addons/base/module/module_data.xml
     # for the full list
     'category': 'Uncategorized',
-    'version': "18.0.1.0.0",
+    'version': "19.0.1.0.0",
 
     # any module necessary for this one to work correctly
-    'depends': ['base','base_electronicos','hr_payroll','l10n_co_bases','consolidated_payroll'], #,'consolidated_payroll'
+    'depends': ['base','base_electronicos','hr_payroll','l10n_co_bases'], #,'consolidated_payroll'
 
     # always loaded
     'data': [
@@ -28,8 +28,10 @@
         'data/data.xml',
         'views/views.xml',
         'views/templates.xml',
-        'views/consolidated_payroll.xml',
+        # 'views/consolidated_payroll.xml',
     ],
+    'installable': True,
+    'application': False,
     # only loaded in demonstration mode
     'license': 'OPL-1',
     'demo': [
