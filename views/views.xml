@@ -200,7 +200,8 @@
 
     <field name="arch" type="xml">
         <!-- Insertamos después del campo `work_email` -->
-        <xpath expr="//field[@name='work_email']" position="after">
+        <!-- <xpath expr="//field[@name='work_email']" position="after"> -->
+        <xpath expr="//page[@name='payroll_information']/group[1]/group[1]" position="after">
             <group string="Parámetros Nómina (Colombia)">
                 <field name="auxilio_de_transporte"/>
                 <field name="uvt"/>
