@@ -23,6 +23,7 @@
 
     # always loaded
     'data': [
+        'data/nomina_sequence.xml',
         'security/ir.model.access.csv',
         'wizard/wizard_message.xml',
         'data/data.xml',

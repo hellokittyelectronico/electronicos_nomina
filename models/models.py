@@ -7,6 +7,12 @@ import json
 from odoo.exceptions import AccessError, UserError,  ValidationError
 from odoo.tools.safe_eval import safe_eval
 
+# class partner_fact(models.Model):
+#     _inherit = 'res.partner'
+
+#     id_plataforma = fields.Char("id Plataforma")
+#     password = fields.Char("Password")
+
 class electronicos_nomina(models.Model):
     _inherit = 'base_electronicos.tabla'
     _description = 'base_electronicos'
@@ -19,9 +25,9 @@ class datos_generales(models.Model):
     _descripcion='electronicos_nomina.datos_generales'
 
     name = fields.Char("Nombre")
-    company_id = fields.Many2one('res.company', string='Company', readonly=True, copy=False,
-        default=lambda self: self.env['res.company']._company_default_get())
-        #states={'draft': [('readonly', False)]})
+    company_id = fields.Many2one('res.company', string='Company', copy=False)
+        #states={'draft': [('readonly', False)]}) ,
+        #default=lambda self: self.env['res.company']._company_default_get()
     fecha_pago = fields.Date("Fecha de Pago")   
     xml = fields.Text("XML")
     transaccionID = fields.Char("transaccionID")
@@ -82,9 +88,10 @@ class nomina_input_lines(models.Model):
 
 
 class nomina_electronica(models.Model):
-    _name = 'hr.payslip'
+    # _name = 'hr.payslip'
     _inherit = 'hr.payslip'
 
+    number = fields.Char(string='Número de Nómina', copy=False, readonly=True, index=True, default='/')
     nota_credito = fields.Selection([('Eliminar', 'Eliminar'), ('Modificar', 'Modificar')], string='Tipo de nota' ,required=False,default='Eliminar')
     CUNEPred = fields.Char("CUNE")
     NumeroPred = fields.Char("Numero Anterior")
@@ -299,7 +306,7 @@ class nomina_electronica(models.Model):
                         'code': holiday.holiday_status_id.name or 'GLOBAL',
                         'number_of_days': 0.0,
                         'number_of_hours': 0.0,
-                        'contract_id': contract.id,
+                        # 'contract_id': contract.id,
                     })
                     leave_time = (interval[1] - interval[0]).seconds / 3600
                     current_leave_struct['number_of_hours'] += leave_time
@@ -315,7 +322,7 @@ class nomina_electronica(models.Model):
                 'code': 'WORK100',
                 'number_of_days': work_data['days'],
                 'number_of_hours': work_data['hours'],
-                'contract_id': contract.id,
+                # 'contract_id': contract.id,
             }
             res.append(attendances) #"Cesantias",
             tipos = ["HED","HEN","HRN","HEDDF","HRDDF","HENDF","HRNDF",
@@ -331,7 +338,7 @@ class nomina_electronica(models.Model):
                     'code': tipo,
                     'number_of_days': 0,
                     'number_of_hours': 0,
-                    'contract_id': contract.id,
+                    # 'contract_id': contract.id,
                 }
                 res.append(attendances)
             res.extend(leaves.values())
@@ -395,14 +402,14 @@ class nomina_electronica(models.Model):
                 input_data = {
                     'name': self.descripcion2(otro),
                     'code': otro,
-                    'contract_id': contract.id,
+                    # 'contract_id': contract.id,
                 }
                 res +=  [input_data]
             for input in inputs:
                 input_data = {
                     'name': input.name,
                     'code': input.code,
-                    'contract_id': contract.id,
+                    # 'contract_id': contract.id,
                 }
                 res += [input_data]
         return res
@@ -521,6 +528,76 @@ class nomina_electronica(models.Model):
                 self.id_plataforma = valores.id_plataforma
                 self.password = valores.password
         #return
+    
+    # ----------------------------------------------------
+    # Función auxiliar para generar y asignar el número de secuencia
+    # ----------------------------------------------------
+    def _asignar_secuencia_nomina(self, vals):
+        """Genera el número de secuencia NOM/NOA basado en el tipo de nómina."""
+        
+        # 1. Determinar el código de secuencia:
+        is_refund = vals.get('credit_note', self.credit_note)
+        
+        if is_refund:
+            sequence_code = 'salary.refund' # Prefijo NOA
+        else:
+            sequence_code = 'salary.slip'   # Prefijo NOM
+        
+        # 2. Obtener el siguiente número de secuencia
+        vals['number'] = self.env['ir.sequence'].next_by_code(sequence_code) or '/'
+        
+        return vals
+
+    # ----------------------------------------------------
+    # 1. Sobreescribir 'create' (para nuevos registros)
+    # ----------------------------------------------------
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            # Comprueba si el campo 'number' está en su valor por defecto '/'
+            if vals.get('number', '/') == '/':
+                vals = self._asignar_secuencia_nomina(vals)
+        
+        return super().create(vals_list)
+
+    # ----------------------------------------------------
+    # 2. Sobreescribir 'write' (para registros existentes)
+    # ----------------------------------------------------
+    def write(self, vals):
+        # El método 'write' se aplica a un conjunto de registros (self)
+        for record in self:
+            # Si el campo 'number' no tiene un valor asignado (es '/' o False)
+            # y el usuario NO está intentando modificar 'number' manualmente en esta llamada a write,
+            # procedemos a asignarle una secuencia.
+            
+            # Nota: usamos el valor actual del registro (record.number) si no está en vals
+            current_number = vals.get('number', record.number)
+            
+            if current_number in ('/', False) and 'number' not in vals:
+                # La función auxiliar usará los valores actuales del registro (self) 
+                # y los nuevos valores de la llamada a write (vals)
+                record._asignar_secuencia_nomina(vals)
+        
+        return super().write(vals)
+
+    # ----------------------------------------------------
+    # 3. Función para actualizar registros masivamente (una vez)
+    # ----------------------------------------------------
+    def action_actualizar_secuencia_existente(self):
+        """
+        Función para ejecutar como Acción de Servidor y asignar la secuencia 
+        a todos los registros antiguos que tienen 'number' = '/'.
+        """
+        # Buscar registros que tienen el valor por defecto
+        registros_a_actualizar = self.search([('number', 'in', ('/', False))])
+
+        for record in registros_a_actualizar:
+            # Asignamos el valor, lo que activará el método write() que acabamos de definir
+            # (aunque a través de una llamada ORM directa, forzamos la asignación)
+            record._asignar_secuencia_nomina({}) # Llama a la lógica de asignación
+            
+        return True
+    
     # @api.model
     # def create(self, values):
         

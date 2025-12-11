@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <record id="seq_nomina_slip" model="ir.sequence">
+            <field name="name">Secuencia de Nómina (Salary Slip)</field>
+            <field name="code">salary.slip</field> 
+            <field name="prefix">NOM/</field> 
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        
+        <record id="seq_nomina_refund" model="ir.sequence">
+            <field name="name">Secuencia de Ajuste de Nómina (Salary Refund)</field>
+            <field name="code">salary.refund</field>
+            <field name="prefix">NOA/</field> 
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        
+    </data>
+</odoo>

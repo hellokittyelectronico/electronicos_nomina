@@ -18,7 +18,7 @@
         <field name="name">FechaIngreso</field>
         <field name="categoria">Periodo</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">str(self.contract_id.date_start)</field>
+        <field name="campo_tecnico">str(self.employee_id.contract_date_start)</field>
         <field name="detalle">Fecha de Ingreso del trabajador a la empresa (AAAA-MM-DD)*</field>
     </record>
      <!-- <record id="n0b" model="base_electronicos.line">
@@ -275,7 +275,7 @@
         <field name="name">FechaInicioLabores</field>
         <field name="categoria">Periodo</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">str(self.contract_id.date_start)</field>
+        <field name="campo_tecnico">str(self.employee_id.contract_date_start)</field>
         <field name="detalle">Fecha inicio labores del empleador</field>
     </record>
     <record id="n29b" model="base_electronicos.line">
@@ -283,7 +283,7 @@
         <field name="name">TipoTrabajador</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.contract_id.tipo_trabajador</field>
+        <field name="campo_tecnico">self.employee_id.tipo_trabajador</field>
         <field name="detalle">Tipo Trabajador</field>
     </record>
     <record id="n30b" model="base_electronicos.line">
@@ -291,7 +291,7 @@
         <field name="name">SubTipoTrabajador</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.contract_id.sub_tipo_trabajador</field>
+        <field name="campo_tecnico">self.employee_id.sub_tipo_trabajador</field>
         <field name="detalle">Sub Tipo trabajador</field>
     </record>
     <record id="n31b" model="base_electronicos.line">
@@ -299,7 +299,7 @@
         <field name="name">AltoRiesgoPension</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.contract_id.AltoRiegoPension</field>
+        <field name="campo_tecnico">self.employee_id.AltoRiegoPension</field>
         <field name="detalle">Alto riesgo pension del trabajador</field>
     </record>
     <record id="n32b" model="base_electronicos.line">
@@ -387,7 +387,7 @@
         <field name="name">SalarioIntegral</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.contract_id.SalarioIntegral</field>
+        <field name="campo_tecnico">self.employee_id.SalarioIntegral</field>
         <field name="detalle">Si tiene o no salario Salario Integral</field>
     </record>
     <record id="n43b" model="base_electronicos.line">
@@ -395,7 +395,7 @@
         <field name="name">TipoContrato</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.contract_id.tipo_contrato</field>
+        <field name="campo_tecnico">self.employee_id.tipo_contrato</field>
         <field name="detalle">El tipo del contrato del trabajador</field>
     </record>
     <record id="n44b" model="base_electronicos.line">
@@ -403,7 +403,7 @@
         <field name="name">Sueldo</field>
         <field name="categoria">Trabajador</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.contract_id.wage</field>
+        <field name="campo_tecnico">self.employee_id.wage</field>
         <field name="detalle">Sueldo del trabajador</field>
     </record>
     <record id="n45b" model="base_electronicos.line">
@@ -419,7 +419,7 @@
         <field name="name">Metodo</field>
         <field name="categoria">Pago</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.contract_id.metodo_pago</field>
+        <field name="campo_tecnico">self.employee_id.metodo_pago</field>
         <field name="detalle">Metodo de pago al trabajador</field>
     </record>
     <record id="n47b" model="base_electronicos.line">
@@ -427,7 +427,7 @@
         <field name="name">Banco</field>
         <field name="categoria">Pago</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.bank_account_id.bank_id.name</field>
+        <field name="campo_tecnico">self.employee_id.bank_account_ids.bank_id.name</field>
         <field name="detalle">Banco por el cual se hace el pago al trabajador</field>
     </record>
     <record id="n48b" model="base_electronicos.line">
@@ -435,7 +435,7 @@
         <field name="name">TipoCuenta</field>
         <field name="categoria">Pago</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.contract_id.tipo_cuenta</field>
+        <field name="campo_tecnico">self.employee_id.tipo_cuenta</field>
         <field name="detalle">Tipo cuenta del Banco</field>
     </record>
     <record id="n49b" model="base_electronicos.line">
@@ -443,7 +443,7 @@
         <field name="name">NumeroCuenta</field>
         <field name="categoria">Pago</field>
         <field name="obligatorio">true</field>
-        <field name="campo_tecnico">self.employee_id.bank_account_id.acc_number</field>
+        <field name="campo_tecnico">self.employee_id.bank_account_ids.acc_number</field>
         <field name="detalle">Numero de la cuenta bancaria</field>
     </record>
     <record id="n50b" model="base_electronicos.line">
