@@ -166,15 +166,21 @@ class nomina_electronica(models.Model):
     # Notas = fields.Char('Notas')    
 
 
-    ##contrain numero de nomina
     @api.constrains('number')
     def _check_number(self):
         for record in self:
-            cantidad = self.env['hr.payslip'].search([('number', '=', self.number)])
-            print(cantidad)
-            print(len(cantidad))
-            if len(cantidad) > 1:
-                raise ValidationError("Existe un comprobante con el mismo numero, por favor modifique el consecutivo de la nomina "+cantidad[0].number)
+            if not record.number or record.number == '/':
+                continue
+
+            dup = self.env['hr.payslip'].search_count([
+                ('number', '=', record.number),
+                ('id', '!=', record.id),
+            ])
+            if dup:
+                raise ValidationError(
+                    "Existe un comprobante con el mismo número. "
+                    "Por favor modifique el consecutivo de la nómina: %s" % record.number
+                )
 
     def copy(self, default=None):
         default = dict(default or {})
@@ -534,18 +540,10 @@ class nomina_electronica(models.Model):
     # ----------------------------------------------------
     def _asignar_secuencia_nomina(self, vals):
         """Genera el número de secuencia NOM/NOA basado en el tipo de nómina."""
-        
-        # 1. Determinar el código de secuencia:
-        is_refund = vals.get('credit_note', self.credit_note)
-        
-        if is_refund:
-            sequence_code = 'salary.refund' # Prefijo NOA
-        else:
-            sequence_code = 'salary.slip'   # Prefijo NOM
-        
-        # 2. Obtener el siguiente número de secuencia
+        is_refund = bool(vals.get('credit_note'))  # solo desde vals en create
+
+        sequence_code = 'salary.refund' if is_refund else 'salary.slip'
         vals['number'] = self.env['ir.sequence'].next_by_code(sequence_code) or '/'
-        
         return vals
 
     # ----------------------------------------------------
@@ -553,11 +551,9 @@ class nomina_electronica(models.Model):
     # ----------------------------------------------------
     @api.model_create_multi
     def create(self, vals_list):
-        for vals in vals_list:
-            # Comprueba si el campo 'number' está en su valor por defecto '/'
+        for i, vals in enumerate(vals_list):
             if vals.get('number', '/') == '/':
-                vals = self._asignar_secuencia_nomina(vals)
-        
+                vals_list[i] = self._asignar_secuencia_nomina(vals)
         return super().create(vals_list)
 
     # ----------------------------------------------------
